@@ -216,11 +216,21 @@ export type CustomOrderRequest = {
 export type AdminLoginRequest = {
   username: string;
   password: string;
+  otp: string;
 };
 
 export type AdminLoginResponse = {
   token: string;
   expiresAt: string;
+};
+
+export type AdminRequestOtpPayload = {
+  username: string;
+  password: string;
+};
+
+export type AdminRequestOtpResponse = {
+  message: string;
 };
 
 export type AdminCategory = {
@@ -355,6 +365,11 @@ export const api = {
     request<CouponValidationResponse>("/api/coupons/validate", { method: "POST", body: payload }),
   placeCustomOrder: (payload: CustomOrderRequest) =>
     request<{ id: number }>("/api/custom-orders", {
+      method: "POST",
+      body: payload
+    }),
+  adminRequestOtp: (payload: AdminRequestOtpPayload) =>
+    request<AdminRequestOtpResponse>("/api/admin/login/request-otp", {
       method: "POST",
       body: payload
     }),

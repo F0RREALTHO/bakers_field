@@ -42,7 +42,7 @@ const viewTitles: Record<View, string> = {
   checkout: "Checkout",
   orders: "My Orders",
   profile: "Guest Information",
-  staff: "Staff Login",
+  staff: "Owner Login",
   reviews: "My Reviews"
 };
 

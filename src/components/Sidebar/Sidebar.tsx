@@ -116,7 +116,7 @@ export const Sidebar = ({
               type="button"
             >
               <span className="drawer-footer__icon">{iconMap.lock}</span>
-              Staff Login
+              Owner Login
             </button>
             <div className="drawer-footer__meta">
               <span>BakersField by Rashmi</span>
