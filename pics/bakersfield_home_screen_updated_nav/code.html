@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script type="text/javascript" nonce="01c8f4ee842c4961b12657c38be" src="//local.adguard.org?ts=1773584027764&amp;type=content-script&amp;dmn=contribution.usercontent.google.com&amp;url=https%3A%2F%2Fcontribution.usercontent.google.com%2Fdownload%3Fc%3DCgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sX2U4NTNiOWJhZjVmZjQ3NGY5YjYyOWI2NmMwYTI3NDRkEgsSBxDC5anmvwIYAZIBIwoKcHJvamVjdF9pZBIVQhM3MTY4ODExMjg0NDQzNjI0NzMx%26filename%3D%26opi%3D89354086&amp;app=brave.exe&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-dnt"></script><script type="text/javascript" nonce="01c8f4ee842c4961b12657c38be" src="//local.adguard.org?ts=1773584027764&amp;name=AdGuard%20Assistant&amp;name=AdGuard%20Extra&amp;name=Web%20of%20Trust&amp;type=user-script"></script><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#F59E0B",
+                        "accent": "#78350F",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221c10",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center justify-between px-4 h-16 max-w-7xl mx-auto">
+<button class="flex items-center justify-center p-2 hover:bg-primary/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">menu</span>
+</button>
+<div class="flex flex-col items-center">
+<h1 class="text-xl font-bold tracking-tight text-accent">BakersField</h1>
+<span class="text-[10px] uppercase tracking-[0.2em] -mt-1 text-accent">by Rashmi</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="flex items-center justify-center p-2 hover:bg-primary/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">search</span>
+</button>
+<button class="relative flex items-center justify-center p-2 hover:bg-primary/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">shopping_bag</span>
+<span class="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white">3</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto">
+<section class="p-4 @container">
+<div class="relative overflow-hidden rounded-xl aspect-[16/9] @[480px]:aspect-[21/9] bg-slate-200 dark:bg-slate-800">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Close up of artisan sourdough bread loaves" style='background-image: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 60%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuDK6QHk3bxkwdb4dPFncmKg19Akm6o813Zyb_G8xT5U8CbcBOqX3ZmIQ8-W-bE8J_C8UjYFa0cIJ_RaiDDKcEZb_ar_ibltQjmJbF5dzpnMhUWYAdPBllcV2IN0Ae8ApXBtKRy-NIw4LlGpS_Y30Vk8Pd-AWsoxxw68YmI89_IDFWehxxX9mKuLgydMzJJIcVgIYfJgv1DWDJrL9bwauPg2VOecHx_xIa-gZ34BCIc9NxfbNWlgId9OMrxwX_Ij7leik_OHGVWzwlc");'></div>
+<div class="absolute bottom-0 left-0 p-6 md:p-10">
+<span class="inline-block px-3 py-1 mb-3 text-xs font-semibold tracking-wider text-white uppercase bg-primary rounded-full">New Arrivals</span>
+<h2 class="text-3xl md:text-5xl font-bold text-white mb-2 text-accent">Freshly Baked</h2>
+<p class="text-slate-200 text-sm md:text-base max-w-md">Experience the warmth of our traditional stone-baked artisan breads, delivered daily from our ovens.</p>
+</div>
+</div>
+</section>
+<section class="py-6">
+<div class="flex items-center justify-between px-4 mb-4">
+<h2 class="text-xl font-bold tracking-tight text-accent">Today's Specials</h2>
+<a class="text-primary text-sm font-medium hover:underline" href="#">View All</a>
+</div>
+<div class="flex overflow-x-auto no-scrollbar gap-4 px-4 pb-4">
+<div class="flex-none w-64 group cursor-pointer">
+<div class="relative aspect-square mb-3 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800">
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="Traditional French pain au chocolat pastry" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBiDTZF2DJZhpAJUvzhStJbYSBYBk5IehTWa_X7BJ2YQrhF6bCNBSTEoUjAJf3rOgn0Om0hEWuSTYkv-j8TzMoPXLeC5oibvqMdEG7p3K64E6flK9igb8N4jrVoTZSvHf23mr3rYqHfdEgHzuTCMHMpbqaBlqObO9ZR9N0HLNj4XWKyAeQKLOtkqsiJ8CWWBCE4whXPX7sEFO30YEjNwb8XO4zPOF-3O3o251-kIsnrX5G_TTg2DWFoUNALseavcUtl4isg80TAkrA");'></div>
+<div class="absolute top-2 right-2">
+</div>
+</div>
+<div>
+<h3 class="font-semibold text-slate-900 dark:text-slate-100">Pain au Chocolat</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-1">Flaky layers with dark chocolate</p>
+<p class="font-bold text-accent">₹450.00</p>
+</div>
+</div>
+<div class="flex-none w-64 group cursor-pointer">
+<div class="relative aspect-square mb-3 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800">
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="Delicious mixed berry fruit tart" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBCck3iqyKRZUc99PbTwrDX5p57QNNJT-MDCrB4QeZSIRUhOQcQnsqNDeUD1tRL1HgJNGtKxmPWQfyPXpq4AmZrPiSP67KUdnpsBGkC9M8R9qaiiI4WLN90L15n1rMdzPmxXosZ7eH5Scm5AOIG4T8NMoSIEDQXscRcMM0lEv7LcWK7LUomC6Qn5XgjOBn1ztAs-tgT1W0o-nJhCYTdpWKiaQH1wHNKI5e9ZyhXiGBW-KQKHGynIAYWhCW1AqtJTGkMUP19Ne1UUrQ");'></div>
+<div class="absolute top-2 right-2">
+</div>
+</div>
+<div>
+<h3 class="font-semibold text-slate-900 dark:text-slate-100">Classic Fruit Tart</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-1">Crème pâtissière and fresh berries</p>
+<p class="font-bold text-accent">₹600.00</p>
+</div>
+</div>
+<div class="flex-none w-64 group cursor-pointer">
+<div class="relative aspect-square mb-3 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800">
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="Fluffy blueberry muffins with crumble top" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBfDhhFxT_Q9LmYMVlMb-BzYmxR3y4TaLl0AznWHkBQs2kYIzypvEJipDIuYLglJeSb_UgmyA9oMLYMGmBfNImBL5PwOBvBElF10bBS54nYwvIpk1qag9ieaKxoD_1Wec7GTXxQgCdzRjqGJIIZ2-2k_uCNyT-RmYfMQm3zE0mLyOtq5SXpFH1BvU9IBGb26FamHKPBDPB8oqadJoMt84ysZvTp7DIbXxOCtgzk74PlgzN1uPPvgxLaRT6jmEc21_iGzrbwBGqXrfU");'></div>
+<div class="absolute top-2 right-2">
+</div>
+</div>
+<div>
+<h3 class="font-semibold text-slate-900 dark:text-slate-100">Berry Muffin</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-1">Wild blueberries and lemon zest</p>
+<p class="font-bold text-accent">₹375.00</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<div class="h-20"></div>
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-background-dark border-t border-primary/10 px-4 py-2">
+<div class="flex justify-between items-center max-w-lg mx-auto">
+<a class="flex flex-col items-center gap-1 p-2 text-accent" href="#">
+<span class="material-symbols-outlined fill-1">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="text-[10px] font-medium">Menu</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px] font-medium">Favorites</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

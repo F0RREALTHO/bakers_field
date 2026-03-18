@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script type="text/javascript" nonce="01c8f4ee842c4961b12657c38be" src="//local.adguard.org?ts=1773584027764&amp;type=content-script&amp;dmn=contribution.usercontent.google.com&amp;url=https%3A%2F%2Fcontribution.usercontent.google.com%2Fdownload%3Fc%3DCgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzk5ZjdlZGNiMDE3ODQ5Y2E4MzdmOTJhYTMwYzI3NDhhEgsSBxDC5anmvwIYAZIBIwoKcHJvamVjdF9pZBIVQhM3MTY4ODExMjg0NDQzNjI0NzMx%26filename%3D%26opi%3D89354086&amp;app=brave.exe&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-dnt"></script><script type="text/javascript" nonce="01c8f4ee842c4961b12657c38be" src="//local.adguard.org?ts=1773584027764&amp;name=AdGuard%20Assistant&amp;name=AdGuard%20Extra&amp;name=Web%20of%20Trust&amp;type=user-script"></script><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#F59E0B",
+                        "accent": "#78350F",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221c10",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<!-- Sticky Header -->
+<header class="sticky top-0 z-50 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center justify-between px-4 h-16 max-w-md mx-auto">
+<button class="p-2 hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-serif text-xl font-bold text-accent dark:text-primary">Artisan Breads</h1>
+<button class="p-2 hover:bg-primary/10 rounded-full transition-colors"><span class="material-symbols-outlined text-primary">shopping_bag</span></button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="max-w-md mx-auto pb-24">
+<!-- Category Stats/Info -->
+<div class="px-4 py-4">
+<p class="text-sm text-slate-500 dark:text-slate-400">Showing 12 artisan loaves</p>
+</div>
+<!-- Product List -->
+<div class="flex flex-col gap-4 px-4">
+<!-- Card 1 -->
+<div class="bg-white dark:bg-slate-900/50 rounded-xl overflow-hidden shadow-sm border border-primary/5 flex gap-4 p-3">
+<div class="w-28 h-28 shrink-0 bg-center bg-cover rounded-lg" data-alt="Freshly baked classic sourdough bread loaf" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAgxkOK8OZRIE-aRFjupbpFBIbxWNtZniABGYQzEquknEF4WDVTjqAic-JbIoIwsNWf5WkEH9Gx69iQrZ5Nd5Q3nMwcfO6Mg7tepvSng53XXKD0G9p2GgSUPkPRS3N0fPy9Dem5wGD1cWvCIamVYXM03gP3XFHoEMIQzqd9QMsalwsPuILnC6m6G1L12SV6RX7gOW82piv1SyFt-BjqIAfc0PdcjpgPZE4veyfg74jcTWrPnV6v0bpQygJob6ORyGSOLFZgv2cDahA');">
+</div>
+<div class="flex flex-col justify-between flex-1 py-1">
+<div>
+<h3 class="font-bold text-slate-900 dark:text-slate-100">Classic Sourdough</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">36-hour fermented sourdough with a crunchy, golden crust.</p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="font-bold text-accent">₹280</span>
+<button class="bg-primary hover:bg-primary/90 text-white w-8 h-8 rounded-lg flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white dark:bg-slate-900/50 rounded-xl overflow-hidden shadow-sm border border-primary/5 flex gap-4 p-3">
+<div class="w-28 h-28 shrink-0 bg-center bg-cover rounded-lg" data-alt="Multigrain batard bread with seeds" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBW1ve7VDzRtCJ0DhANzjcdFxpUkr34fRInyxfZatpyGL5mk--HKgE-VFfWIn_3ICR9JHYu8md-U53f5iaDYGWf47axzxBGP7bsTFUhuXTmLvFEVWdXSxCUOl9UPiHTgzxQE2sq3ZSFEsDXVAml_EF2QlqW4LQ7ZQCDb-iOgnoXbN0l4WzPr4rSmwlv6zkRzNWN7Nx-Jxq2Cza3YY7Urn5FKk-TfyK1xHF4YYOhMLvuKJNTeBmJX_46fKmpL3Q7wKd6y6u_2g0Crdo');">
+</div>
+<div class="flex flex-col justify-between flex-1 py-1">
+<div>
+<h3 class="font-bold text-slate-900 dark:text-slate-100">Multi-grain Batard</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Nutty profile with sunflower, flax, and sesame seeds.</p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="font-bold text-accent">₹320</span>
+<button class="bg-primary hover:bg-primary/90 text-white w-8 h-8 rounded-lg flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-white dark:bg-slate-900/50 rounded-xl overflow-hidden shadow-sm border border-primary/5 flex gap-4 p-3">
+<div class="w-28 h-28 shrink-0 bg-center bg-cover rounded-lg" data-alt="Focaccia with roasted garlic and rosemary" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD8OI2B7AO_BM1zU0T1F1lQFYwiiGaINDOiUNK5GLAQU-FWMrxOvSQ3PZU1Y2xLWRKGjvqPnPpey2wLHj7RXzA-uaf3tYHRgigekdxoiAc9-vb8gGKK88m7BViuMn6-cIzmJvHHJuwx0lqNtL06Wgiu1DdwageRLpgmb4Rzg5c51yktbwmpaHG2v0EW9Fp0dgZ9JHqfIETOqbSomgRs-rYmRUAK3ENeu_St3KLX5sQH9FGSKDyG6ugBJKq8EevlUHWXDt8G_efvlYg');">
+</div>
+<div class="flex flex-col justify-between flex-1 py-1">
+<div>
+<h3 class="font-bold text-slate-900 dark:text-slate-100">Garlic Focaccia</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Infused with rosemary and cold-pressed olive oil.</p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="font-bold text-accent">₹240</span>
+<button class="bg-primary hover:bg-primary/90 text-white w-8 h-8 rounded-lg flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-white dark:bg-slate-900/50 rounded-xl overflow-hidden shadow-sm border border-primary/5 flex gap-4 p-3">
+<div class="w-28 h-28 shrink-0 bg-center bg-cover rounded-lg" data-alt="Classic French Baguette" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDNBVhYiXXPYJvVRhaZss70EnfDzO1GqHGCx6p83ieKlJyUExb2dzJ4kIWATqeRQQNozqG9boB7MvhJzhieKHI-L6oaU_Wfqc2r0hT_CxPS9Zluoz-cOoumSq5knT-TM2AXtGWk-SZX2nVRFmlHxV5Yvz8nb-KzuVOAoG7zso6EQYsY1508AHVTmQ6T_NSSLC_7b2Xr2lC0bpTAAXPVh_hwusQzK5xOilLVNRayOZBJE9FVTdUVSLjzKA57WZthkZV2CIp6ersRLl0');">
+</div>
+<div class="flex flex-col justify-between flex-1 py-1">
+<div>
+<h3 class="font-bold text-slate-900 dark:text-slate-100">French Baguette</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Traditional crusty exterior with a light, airy crumb.</p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="font-bold text-accent">₹180</span>
+<button class="bg-primary hover:bg-primary/90 text-white w-8 h-8 rounded-lg flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="bg-white dark:bg-slate-900/50 rounded-xl overflow-hidden shadow-sm border border-primary/5 flex gap-4 p-3">
+<div class="w-28 h-28 shrink-0 bg-center bg-cover rounded-lg" data-alt="Dark Rye Bread loaf" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD5Kb2jFvKOjA3Yz5_zXb3AmRwnmElOLzcxnPlPGnAEuuDeY-Pe9NLJt52JtLEioWrKJ9BtWjtm53EprlqDM2Bs1YWb26G2qXx6pN1ZqSe_YYtUg25gFae5eA_XlN0MU_KprLVtpzEB4NgqZ3aEke86QJOKY5gNacOt8HL-xGycf3LL4Zd6CVVVlltan7jOUfCKk-QZUKwHnr2ifhcmrcRz43RwVo5btUessMeYLnGZSo7QetxJxsdRsILgF0jx-8ssRAG1jTnl4ZY');">
+</div>
+<div class="flex flex-col justify-between flex-1 py-1">
+<div>
+<h3 class="font-bold text-slate-900 dark:text-slate-100">Walnut Rye</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Dense rye bread packed with toasted walnuts.</p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="font-bold text-accent">₹350</span>
+<button class="bg-primary hover:bg-primary/90 text-white w-8 h-8 rounded-lg flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-950 border-t border-primary/10 px-4 pb-6 pt-2 z-50">
+<div class="flex justify-between items-center max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 active-nav text-accent" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Bag</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Favorites</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script type="text/javascript" nonce="01c8f4ee842c4961b12657c38be" src="//local.adguard.org?ts=1773584027764&amp;type=content-script&amp;dmn=contribution.usercontent.google.com&amp;url=https%3A%2F%2Fcontribution.usercontent.google.com%2Fdownload%3Fc%3DCgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzBhNzE0NTUzZDhjZDQ3NWJhYzhjZDIyZjZiZWM1YzkwEgsSBxDC5anmvwIYAZIBIwoKcHJvamVjdF9pZBIVQhM3MTY4ODExMjg0NDQzNjI0NzMx%26filename%3D%26opi%3D89354086&amp;app=brave.exe&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-dnt"></script><script type="text/javascript" nonce="01c8f4ee842c4961b12657c38be" src="//local.adguard.org?ts=1773584027764&amp;name=AdGuard%20Assistant&amp;name=AdGuard%20Extra&amp;name=Web%20of%20Trust&amp;type=user-script"></script><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f59e0b",
+                        "accent": "#78350f",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221c10",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<title>Custom Order - BakersField by Rashmi</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="flex items-center bg-background-light dark:bg-background-dark p-4 border-b border-primary/10 sticky top-0 z-10">
+<button class="text-slate-900 dark:text-slate-100 flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h2 class="text-lg font-bold leading-tight tracking-tight flex-1 ml-2 text-[#78350F]">BakersField by Rashmi</h2>
+<button class="text-slate-900 dark:text-slate-100 flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</header>
+<main class="flex-1 overflow-y-auto px-4 pb-24">
+<!-- Category Title -->
+<div class="pt-6 pb-2">
+<h1 class="text-2xl font-bold tracking-tight text-primary">Order a Custom Cake</h1>
+<div class="h-1 w-12 bg-primary rounded-full mt-2"></div>
+</div>
+<!-- Progress Indicator -->
+<div class="flex gap-2 py-6">
+<div class="h-2 flex-1 rounded-full bg-primary"></div>
+<div class="h-2 flex-1 rounded-full bg-primary/20"></div>
+<div class="h-2 flex-1 rounded-full bg-primary/20"></div>
+</div>
+<!-- Main Form Section -->
+<section class="space-y-6">
+<div>
+<h3 class="text-2xl font-bold leading-tight text-slate-900 dark:text-slate-100">Introduce your Idea</h3>
+<p class="text-slate-600 dark:text-slate-400 text-base font-normal mt-2">
+                    Tell us about the cake you're envisioning. Include flavors, colors, and any special themes.
+                </p>
+</div>
+<!-- Text Area for Ideas -->
+<div class="space-y-2">
+<label class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400" for="cake-description">
+                    Detailed Description
+                </label>
+<textarea class="w-full bg-white dark:bg-slate-800 border-2 border-primary/10 focus:border-primary focus:ring-primary rounded-xl p-4 text-base resize-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500" id="cake-description" placeholder="E.g., A three-tier vintage Victorian cake with lavender frosting, edible pearls, and a moist lemon-poppyseed base..." rows="6"></textarea>
+</div>
+<!-- Image Upload Section -->
+<div class="space-y-4">
+<label class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Reference Images
+                </label>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex flex-col items-center justify-center border-2 border-dashed border-primary/30 rounded-xl p-6 bg-primary/5 hover:bg-primary/10 hover:border-primary transition-all group">
+<span class="material-symbols-outlined text-primary text-3xl group-hover:scale-110 transition-transform">add_a_photo</span>
+<span class="text-sm font-medium mt-2 text-primary">Upload Photo</span>
+</button>
+<div class="relative rounded-xl overflow-hidden border border-primary/10 aspect-square group">
+<img alt="Cake inspiration example" class="w-full h-full object-cover" data-alt="A beautifully decorated multi-tier floral cake" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFzPbnO8COjjtpEuDCirdouYpLjW-Pyh0NXnr7MNWGWiTWyBu_IFIj4sgRmHDWjsSyQhE7g3o5sCEJRaQK1JDEUK179wzWzGJ8WIVkd_8I2JLp4sNuxEocdZfTM6AMgKQI-0Hgdub7Ih-7Q_1esuZ65qTppnFTKavFqsJc8yi0VxqmFc7T3sA_GMLAX3-of9kfA0UYFDZKVzUnG1h_GBICVU0HKIB9Ww9emOTxgDW_jNs9J0Eg_QSC6VbaNmStzHzriGJZiIXtQ_8"/>
+<button class="absolute top-2 right-2 bg-black/50 text-white rounded-full p-1 backdrop-blur-sm">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+</div>
+<p class="text-xs text-slate-500 italic">PNG, JPG up to 10MB. Maximum 4 photos.</p>
+</div>
+<!-- Preferences Shortcut -->
+<div class="bg-primary/10 rounded-xl p-4 flex items-center justify-between border border-primary/20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">auto_awesome</span>
+<div>
+<p class="font-bold text-sm">Need inspiration?</p>
+<p class="text-xs text-slate-600 dark:text-slate-400">Browse our signature style gallery</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary">chevron_right</span>
+</div>
+</section>
+<!-- Spacer -->
+<div class="h-10"></div>
+<!-- Action Button -->
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-95 mb-8">
+            Continue to Preferences
+        </button>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-primary/10 px-4 py-2 flex items-center justify-between z-20"><!-- Home -->
+<a class="flex flex-col items-center gap-1 flex-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<!-- Menu (Active) -->
+<a class="flex flex-col items-center gap-1 flex-1 text-[#78350F]" href="#">
+<span class="material-symbols-outlined fill-1">restaurant_menu</span>
+<span class="text-[10px] font-medium">Menu</span>
+</a>
+<!-- Favorites -->
+<a class="flex flex-col items-center gap-1 flex-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px] font-medium">Favorites</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center gap-1 flex-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a></nav>
+</body></html>

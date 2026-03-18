@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script type="text/javascript" nonce="01c8f4ee842c4961b12657c38be" src="//local.adguard.org?ts=1773584027764&amp;type=content-script&amp;dmn=contribution.usercontent.google.com&amp;url=https%3A%2F%2Fcontribution.usercontent.google.com%2Fdownload%3Fc%3DCgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sX2YyMTBjYTc1YjM5NjRlOGJiM2Y3NWYzYjljOGNkODkxEgsSBxDC5anmvwIYAZIBIwoKcHJvamVjdF9pZBIVQhM3MTY4ODExMjg0NDQzNjI0NzMx%26filename%3D%26opi%3D89354086&amp;app=brave.exe&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-dnt"></script><script type="text/javascript" nonce="01c8f4ee842c4961b12657c38be" src="//local.adguard.org?ts=1773584027764&amp;name=AdGuard%20Assistant&amp;name=AdGuard%20Extra&amp;name=Web%20of%20Trust&amp;type=user-script"></script><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f59f0a",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221c10",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>BakersField by Rashmi - Navigation</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<!-- Navigation Drawer Wrapper -->
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden mt-1">
+<!-- Backdrop -->
+<div class="absolute inset-0 z-50 bg-slate-900/40 backdrop-blur-sm">
+<!-- Sidebar Content -->
+<div class="flex h-full w-80 max-w-[85%] flex-col bg-background-light dark:bg-background-dark shadow-2xl mt-1">
+<!-- Header Section -->
+<div class="flex flex-col gap-4 p-6 border-b border-primary/10 mt-1">
+<div class="flex items-center gap-4">
+<div class="size-14 rounded-full border-2 border-primary overflow-hidden bg-primary/10">
+<img alt="User Avatar" class="h-full w-full object-cover" data-alt="Circular portrait of a smiling woman foodie" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4XB4PzlUwvZ7ycNuRWpC8dKPh4Pc3yjUVQ6zso7spqpaA5cyS-M01D2UWPY3k-5-oglIrqe2JLyRDyAuJnZpQLoKxAyj0eLrszOfG4fH20NrnWN_k5vMIeL_a564fwyXrXqlBXgQoX9FC8H3PFZUKZ1hULXYRvCtbbcT5R3vmHdM15e17vMOXkwMnvsEG53WzJX-I2SADo_aeCT45MbuGBCAK7SRA5mh9SbtlHWx2QFSG7UOwbKCcAAd5zrQdLjEXOsqHW0um448"/>
+</div>
+<div class="flex flex-col mt-1">
+<h2 class="text-xl font-bold leading-tight tracking-tight text-slate-900 dark:text-slate-100">
+                                Hi, Foodie! 🥐
+                            </h2>
+</div>
+</div>
+</div>
+<!-- Menu List -->
+<nav class="flex-1 overflow-y-auto p-4 space-y-2">
+<!-- My Orders -->
+<div class="flex items-center gap-4 p-3 rounded-xl transition-colors hover:bg-primary/5 cursor-pointer">
+<div class="flex size-11 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
+<span class="material-symbols-outlined text-2xl">package_2</span>
+</div>
+<div class="flex flex-col justify-center overflow-hidden">
+<p class="text-base font-semibold leading-tight text-slate-900 dark:text-slate-100">My Orders</p>
+<p class="text-xs font-normal text-slate-500 dark:text-slate-400 truncate">Track your treats</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-slate-400 text-lg">chevron_right</span>
+</div>
+<!-- My Reviews -->
+<div class="flex items-center gap-4 p-3 rounded-xl transition-colors hover:bg-primary/5 cursor-pointer">
+<div class="flex size-11 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
+<span class="material-symbols-outlined text-2xl">star</span>
+</div>
+<div class="flex flex-col justify-center overflow-hidden">
+<p class="text-base font-semibold leading-tight text-slate-900 dark:text-slate-100">My Reviews</p>
+<p class="text-xs font-normal text-slate-500 dark:text-slate-400 truncate">Share your experience</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-slate-400 text-lg">chevron_right</span>
+</div>
+<!-- Saved Addresses -->
+<div class="flex items-center gap-4 p-3 rounded-xl transition-colors hover:bg-primary/5 cursor-pointer">
+<div class="flex size-11 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
+<span class="material-symbols-outlined text-2xl">location_on</span>
+</div>
+<div class="flex flex-col justify-center overflow-hidden">
+<p class="text-base font-semibold leading-tight text-slate-900 dark:text-slate-100">Saved Addresses</p>
+<p class="text-xs font-normal text-slate-500 dark:text-slate-400 truncate">Manage Home/Work locations</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-slate-400 text-lg">chevron_right</span>
+</div>
+<!-- Order Custom Cake (Highlighted) -->
+<div class="flex items-center gap-4 p-3 rounded-xl bg-primary/15 border border-primary/20 cursor-pointer group">
+<div class="flex size-11 items-center justify-center rounded-lg bg-primary text-white shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-2xl">cake</span>
+</div>
+<div class="flex flex-col justify-center overflow-hidden">
+<p class="text-base font-bold leading-tight text-slate-900 dark:text-slate-100">Order Custom Cake</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-primary text-lg">arrow_forward</span>
+</div>
+</nav>
+<!-- Footer Section -->
+<div class="p-6 border-t border-primary/10">
+<a class="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">admin_panel_settings</span>
+                        Staff Login
+                    </a>
+<p class="mt-4 text-[10px] uppercase tracking-widest text-slate-400 dark:text-slate-500 font-bold">
+                        BakersField by Rashmi v2.4
+                    </p>
+</div>
+</div>
+</div>
+<!-- Placeholder for background content -->
+<main class="p-8">
+<h1 class="text-3xl font-bold opacity-20">Main Dashboard Content...</h1>
+</main>
+</div>
+</body></html>
