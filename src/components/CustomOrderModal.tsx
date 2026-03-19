@@ -21,16 +21,19 @@ const flavorOptions = [
   "Vanilla",
   "Red Velvet",
   "Fruit Blast",
-  "Butterscotch"
+  "Butterscotch",
+  "Custom"
 ];
 
 const initialForm = {
   description: "",
-  imageUrl: "",
+  imageUrls: [] as string[],
   occasion: "",
   budget: "1500",
   size: "0.5 kg",
+  customSize: "",
   flavor: "Chocolate",
+  customFlavor: "",
   eggless: true
 };
 
@@ -43,12 +46,20 @@ export const CustomOrderModal = ({
   const [form, setForm] = useState(initialForm);
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [descriptionMissingHint, setDescriptionMissingHint] = useState(false);
+  const [customSizeMissingHint, setCustomSizeMissingHint] = useState(false);
+  const [customFlavorMissingHint, setCustomFlavorMissingHint] = useState(false);
+  const [occasionMissingHint, setOccasionMissingHint] = useState(false);
 
   useEffect(() => {
     if (!open) {
       setForm(initialForm);
       setStep(1);
       setSubmitting(false);
+      setDescriptionMissingHint(false);
+      setCustomSizeMissingHint(false);
+      setCustomFlavorMissingHint(false);
+      setOccasionMissingHint(false);
     }
   }, [open]);
 
@@ -61,14 +72,33 @@ export const CustomOrderModal = ({
   };
 
   const summaryDescription = useMemo(() => {
+    const selectedSize =
+      form.size === "Custom"
+        ? form.customSize.trim() || "Custom size"
+        : form.size;
+    const selectedFlavor =
+      form.flavor === "Custom"
+        ? form.customFlavor.trim() || "Custom flavor"
+        : form.flavor;
     const base = form.description.trim();
     const picks = [
-      `Size: ${form.size}`,
-      `Flavor: ${form.flavor}`,
+      `Size: ${selectedSize}`,
+      `Flavor: ${selectedFlavor}`,
+      `References: ${form.imageUrls.length}`,
       form.eggless ? "Eggless" : "With eggs"
     ];
     return base ? `${base} | ${picks.join(" · ")}` : picks.join(" · ");
-  }, [form.description, form.eggless, form.flavor, form.size]);
+  }, [form.customFlavor, form.customSize, form.description, form.eggless, form.flavor, form.imageUrls.length, form.size]);
+
+  const selectedSizeLabel =
+    form.size === "Custom"
+      ? form.customSize.trim() || "Custom size"
+      : form.size;
+
+  const selectedFlavorLabel =
+    form.flavor === "Custom"
+      ? form.customFlavor.trim() || "Custom flavor"
+      : form.flavor;
 
   if (!open) {
     return null;
@@ -78,7 +108,11 @@ export const CustomOrderModal = ({
   const summaryImage = "/pics/custom-cake-step3.png";
 
   const handleSubmit = async () => {
-    if (!form.description || !form.imageUrl || !form.occasion) return;
+    if (!form.occasion.trim()) {
+      setOccasionMissingHint(true);
+      return;
+    }
+    setOccasionMissingHint(false);
     setSubmitting(true);
     try {
       await onSubmit({
@@ -86,7 +120,7 @@ export const CustomOrderModal = ({
         phoneNumber: guest.phone.trim(),
         description: summaryDescription,
         occasion: form.occasion.trim(),
-        imageUrl: form.imageUrl,
+        imageUrl: form.imageUrls[0],
         estimatedPriceInr: Number(form.budget)
       });
     } finally {
@@ -94,19 +128,64 @@ export const CustomOrderModal = ({
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        alert("Image size should be less than 2MB");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setForm((prev) => ({ ...prev, imageUrl: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (!files.length) return;
+
+    const oversized = files.find((file) => file.size > 2 * 1024 * 1024);
+    if (oversized) {
+      alert("Each image should be less than 2MB");
+      return;
     }
+
+    const toDataUrl = (file: File) =>
+      new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = () => reject(new Error("Unable to read image"));
+        reader.readAsDataURL(file);
+      });
+
+    try {
+      const selectedUrls = await Promise.all(files.map(toDataUrl));
+      setForm((prev) => {
+        const combined = [...prev.imageUrls, ...selectedUrls];
+        const limited = combined.slice(0, 3);
+        if (combined.length > 3) {
+          alert("You can upload a maximum of 3 reference photos.");
+        }
+        return { ...prev, imageUrls: limited };
+      });
+    } catch {
+      alert("Unable to read one or more images. Please try again.");
+    } finally {
+      e.target.value = "";
+    }
+  };
+
+  const handleStepOneContinue = () => {
+    if (!form.description.trim()) {
+      if (form.imageUrls.length > 0) {
+        setDescriptionMissingHint(true);
+      }
+      return;
+    }
+    setDescriptionMissingHint(false);
+    nextStep();
+  };
+
+  const handleStepTwoContinue = () => {
+    if (form.size === "Custom" && !form.customSize.trim()) {
+      setCustomSizeMissingHint(true);
+      return;
+    }
+    if (form.flavor === "Custom" && !form.customFlavor.trim()) {
+      setCustomFlavorMissingHint(true);
+      return;
+    }
+    setCustomSizeMissingHint(false);
+    setCustomFlavorMissingHint(false);
+    nextStep();
   };
 
   return (
@@ -143,45 +222,87 @@ export const CustomOrderModal = ({
               Tell us about the cake you&apos;re envisioning. Include flavors,
               colors, and any special themes.
             </p>
-            <label>
+            <label className={descriptionMissingHint ? "custom-field--error" : ""}>
               Detailed Description
               <textarea
                 value={form.description}
                 onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    description: event.target.value
-                  }))
+                  setForm((current) => {
+                    if (event.target.value.trim()) {
+                      setDescriptionMissingHint(false);
+                    }
+                    return {
+                      ...current,
+                      description: event.target.value
+                    };
+                  })
                 }
                 placeholder="A three-tier vintage Victorian cake with lavender frosting..."
                 rows={5}
                 required
               />
             </label>
+            {descriptionMissingHint ? (
+              <p className="custom-field__error">Please let us know your cake idea in the detailed description.</p>
+            ) : null}
             <div className="custom-upload">
               <label className="custom-upload__button">
-                {form.imageUrl ? "Change Photo" : "Upload Reference Photo *"}
+                <span className="custom-upload__icon" aria-hidden="true">
+                  {form.imageUrls.length ? "✓" : "↑"}
+                </span>
+                <span className="custom-upload__title">
+                  {form.imageUrls.length ? "Reference photos added" : "Upload reference photos"}
+                </span>
+                <span className="custom-upload__subtitle">
+                  {form.imageUrls.length
+                    ? `${form.imageUrls.length}/3 selected. You can add more.`
+                    : "Show us design, shape, colors, or theme"}
+                </span>
+                <span className="custom-upload__cta">{form.imageUrls.length ? "Add / Change Photos" : "Choose Photos"}</span>
                 <input
                   type="file"
                   accept="image/*"
+                  multiple
                   onChange={handleFileChange}
                   className="sr-only"
                   style={{ display: "none" }}
                   required
                 />
               </label>
-              {form.imageUrl && (
-                <div
-                  className="custom-upload__preview"
-                  style={{ backgroundImage: `url(${form.imageUrl})` }}
-                />
+              {form.imageUrls.length > 0 && (
+                <div className="custom-upload__preview-wrap">
+                  <div className="custom-upload__preview-grid">
+                    {form.imageUrls.map((imageUrl, index) => (
+                      <div key={`${index}-${imageUrl.slice(0, 24)}`} className="custom-upload__preview-card">
+                        <div
+                          className="custom-upload__preview"
+                          style={{ backgroundImage: `url(${imageUrl})` }}
+                        />
+                        <button
+                          type="button"
+                          className="custom-upload__remove"
+                          onClick={() =>
+                            setForm((current) => ({
+                              ...current,
+                              imageUrls: current.imageUrls.filter((_, currentIndex) => currentIndex !== index)
+                            }))
+                          }
+                          aria-label={`Remove reference photo ${index + 1}`}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <span className="custom-upload__status">Minimum 1, maximum 3 photos</span>
+                </div>
               )}
             </div>
             <button 
               className="primary primary--wide" 
               type="button" 
-              onClick={nextStep}
-              disabled={!form.description.trim() || !form.imageUrl}
+              onClick={handleStepOneContinue}
+              disabled={form.imageUrls.length === 0}
             >
               Continue to Preferences
             </button>
@@ -206,10 +327,16 @@ export const CustomOrderModal = ({
                       form.size === option.label ? "is-active" : ""
                     }`}
                     onClick={() =>
-                      setForm((current) => ({
-                        ...current,
-                        size: option.label
-                      }))
+                      setForm((current) => {
+                        if (option.label !== "Custom") {
+                          setCustomSizeMissingHint(false);
+                        }
+                        return {
+                          ...current,
+                          size: option.label,
+                          customSize: option.label === "Custom" ? current.customSize : ""
+                        };
+                      })
                     }
                   >
                     <span>{option.label}</span>
@@ -217,6 +344,30 @@ export const CustomOrderModal = ({
                   </button>
                 ))}
               </div>
+              {form.size === "Custom" ? (
+                <label className={customSizeMissingHint ? "custom-field--error" : ""}>
+                  Your required size
+                  <input
+                    value={form.customSize}
+                    onChange={(event) =>
+                      setForm((current) => {
+                        if (event.target.value.trim()) {
+                          setCustomSizeMissingHint(false);
+                        }
+                        return {
+                          ...current,
+                          customSize: event.target.value
+                        };
+                      })
+                    }
+                    placeholder="e.g. 3.5 kg or 60 servings"
+                    required
+                  />
+                </label>
+              ) : null}
+              {customSizeMissingHint ? (
+                <p className="custom-field__error">Please tell us your required custom size.</p>
+              ) : null}
             </div>
             <div className="custom-block">
               <p className="custom-block__title">Base Flavor</p>
@@ -229,16 +380,46 @@ export const CustomOrderModal = ({
                       form.flavor === flavor ? "is-active" : ""
                     }`}
                     onClick={() =>
-                      setForm((current) => ({
-                        ...current,
-                        flavor
-                      }))
+                      setForm((current) => {
+                        if (flavor !== "Custom") {
+                          setCustomFlavorMissingHint(false);
+                        }
+                        return {
+                          ...current,
+                          flavor,
+                          customFlavor: flavor === "Custom" ? current.customFlavor : ""
+                        };
+                      })
                     }
                   >
                     {flavor}
                   </button>
                 ))}
               </div>
+              {form.flavor === "Custom" ? (
+                <label className={customFlavorMissingHint ? "custom-field--error" : ""}>
+                  Your required flavor
+                  <input
+                    value={form.customFlavor}
+                    onChange={(event) =>
+                      setForm((current) => {
+                        if (event.target.value.trim()) {
+                          setCustomFlavorMissingHint(false);
+                        }
+                        return {
+                          ...current,
+                          customFlavor: event.target.value
+                        };
+                      })
+                    }
+                    placeholder="e.g. Blueberry Cheesecake"
+                    required
+                  />
+                </label>
+              ) : null}
+              {customFlavorMissingHint ? (
+                <p className="custom-field__error">Please tell us your required custom flavor.</p>
+              ) : null}
             </div>
             <label className="custom-toggle">
               <input
@@ -253,7 +434,11 @@ export const CustomOrderModal = ({
               />
               Eggless cake
             </label>
-            <button className="primary primary--wide" type="button" onClick={nextStep}>
+            <button
+              className="primary primary--wide"
+              type="button"
+              onClick={handleStepTwoContinue}
+            >
               Continue to Summary
             </button>
             <button className="ghost" type="button" onClick={prevStep}>
@@ -271,35 +456,43 @@ export const CustomOrderModal = ({
             <div className="custom-summary">
               <div
                 className="custom-summary__image"
-                style={{ backgroundImage: `url(${form.imageUrl || summaryImage})` }}
+                style={{ backgroundImage: `url(${form.imageUrls[0] || summaryImage})` }}
               />
               <div>
                 <p className="custom-summary__label">Reference Image</p>
                 <p className="custom-summary__text">{summaryDescription}</p>
               </div>
             </div>
-            <label>
+            <label className={occasionMissingHint ? "custom-field--error" : ""}>
               What's the Occasion? *
               <input
                 value={form.occasion}
                 onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    occasion: event.target.value
-                  }))
+                  setForm((current) => {
+                    if (event.target.value.trim()) {
+                      setOccasionMissingHint(false);
+                    }
+                    return {
+                      ...current,
+                      occasion: event.target.value
+                    };
+                  })
                 }
                 placeholder="Birthday, Wedding, Anniversary..."
                 required
               />
             </label>
+            {occasionMissingHint ? (
+              <p className="custom-field__error">Please tell us the occasion for this cake.</p>
+            ) : null}
             <div className="custom-summary__stats">
               <div>
                 <span>Size</span>
-                <strong>{form.size}</strong>
+                <strong>{selectedSizeLabel}</strong>
               </div>
               <div>
                 <span>Flavor</span>
-                <strong>{form.flavor}</strong>
+                <strong>{selectedFlavorLabel}</strong>
               </div>
             </div>
             <label>
@@ -324,7 +517,7 @@ export const CustomOrderModal = ({
               className="primary primary--wide"
               type="button"
               onClick={handleSubmit}
-              disabled={submitting || !form.occasion.trim()}
+              disabled={submitting}
             >
               {submitting ? "Submitting..." : "Add Custom Cake to Cart"}
             </button>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api, type Order } from "../api";
+import { openWhatsAppChat } from "../lib/contact";
 import type { AlertToastState } from "../hooks/useAlertToast";
 import { useGuestSession } from "../hooks/useGuestSession";
 import { useLiveData } from "../hooks/useLiveData";
@@ -22,11 +23,18 @@ export const MyOrdersPage = ({ onToast }: MyOrdersPageProps) => {
         return;
       }
       try {
-        const results = await Promise.all(
+        const results = await Promise.allSettled(
           guest.placedOrderIds.map((id) => api.getOrder(id))
         );
-        setOrders(results);
+        const successfulOrders = results
+          .filter((result): result is PromiseFulfilledResult<Order> => result.status === "fulfilled")
+          .map((result) => result.value);
+        setOrders(successfulOrders);
+        if (successfulOrders.length === 0 && guest.placedOrderIds.length > 0) {
+          onToast({ type: "error", message: "Unable to load some order history." });
+        }
       } catch {
+        setOrders([]);
         onToast({ type: "error", message: "Unable to load orders." });
       } finally {
         setLoading(false);
@@ -34,6 +42,27 @@ export const MyOrdersPage = ({ onToast }: MyOrdersPageProps) => {
     };
     load();
   }, [guest.placedOrderIds, onToast, liveDataUpdate]);
+
+  const openCustomContact = (
+    requestId: number,
+    occasion: string,
+    description: string,
+    budgetInr?: number
+  ) => {
+    const message = [
+      "Hi BakersField, I need help with my custom cake request.",
+      `Request ID: #${requestId}`,
+      `Name: ${guest.name || "Guest"}`,
+      `Phone: ${guest.phone || "Not provided"}`,
+      budgetInr && budgetInr > 0 ? `Budget: ₹${budgetInr}` : null,
+      `Occasion: ${occasion}`,
+      description ? `Details: ${description}` : null
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    openWhatsAppChat(message);
+  };
 
   if (loading) {
     return (
@@ -46,9 +75,41 @@ export const MyOrdersPage = ({ onToast }: MyOrdersPageProps) => {
   return (
     <section className="page">
       <h2>My Orders</h2>
-      {orders.length === 0 ? (
+      {orders.length === 0 && guest.customRequests.length === 0 ? (
         <p className="muted">No orders placed yet.</p>
-      ) : (
+      ) : null}
+
+      {guest.customRequests.length > 0 ? (
+        <div className="orders-list">
+          {guest.customRequests.map((request) => (
+            <div key={`custom-${request.id}`} className="order-card order-card--custom-request">
+              <div>
+                <h4>Custom Request #{request.id}</h4>
+                <p className="muted">Occasion: {request.occasion}</p>
+              </div>
+              <div>
+                <span className="status">PENDING_CONFIRMATION</span>
+                <button
+                  className="ghost order-card__contact"
+                  type="button"
+                  onClick={() =>
+                    openCustomContact(
+                      request.id,
+                      request.occasion,
+                      request.description,
+                      request.budgetInr
+                    )
+                  }
+                >
+                  Contact Us
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : null}
+
+      {orders.length > 0 ? (
         <div className="orders-list">
           {orders.map((order) => (
             <div key={order.id} className="order-card">
@@ -63,7 +124,7 @@ export const MyOrdersPage = ({ onToast }: MyOrdersPageProps) => {
             </div>
           ))}
         </div>
-      )}
+      ) : null}
     </section>
   );
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import { Order } from "../api";
+import { buildWhatsAppUrl } from "../lib/contact";
 
 type OrderSuccessModalProps = {
   order: Order;
@@ -7,12 +8,10 @@ type OrderSuccessModalProps = {
 };
 
 export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({ order, onClose }) => {
-  const bakeryPhone = "916360568919";
-  
   const generateWhatsAppUrl = () => {
     const itemDetails = order.items?.map(item => `- ${item.itemName} x${item.quantity}`).join("\n") || "";
     const message = `Hi Bakersfield! My order #${order.id} for ₹${order.totalAmountInr} has been placed. Please confirm my order!\n\nDetails:\n${itemDetails}`;
-    return `https://wa.me/${bakeryPhone}?text=${encodeURIComponent(message)}`;
+    return buildWhatsAppUrl(message);
   };
 
   return (
@@ -24,7 +23,7 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({ order, onC
             <p className="eyebrow">Success!</p>
             <h3>Order Placed Successfully</h3>
           </div>
-          <button className="modal__close" onClick={onClose} type="button">
+          <button className="modal__close modal__close--pill" onClick={onClose} type="button" aria-label="Close order success dialog">
             Close
           </button>
         </div>
@@ -49,7 +48,7 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({ order, onC
             </a>
           </div>
           
-          <button className="secondary secondary--wide" onClick={onClose} type="button" style={{ marginTop: '12px' }}>
+          <button className="ghost order-success__dismiss" onClick={onClose} type="button">
             Dismiss
           </button>
         </div>

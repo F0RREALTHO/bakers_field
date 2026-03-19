@@ -118,7 +118,9 @@ export const MenuPage = ({
 
       <div className="section-title">
         <h3>Browse Categories</h3>
-        <span className="section-hint">See All</span>
+        <button className="link-button" type="button" onClick={() => setActiveCategoryId(null)}>
+          See All
+        </button>
       </div>
       <div className="category-row">
         {loading ? (

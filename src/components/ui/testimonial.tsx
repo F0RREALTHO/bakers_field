@@ -27,36 +27,106 @@ const TestimonialCarousel = React.forwardRef<
     ref
   ) => {
     const [currentIndex, setCurrentIndex] = React.useState(0);
-    const [exitX, setExitX] = React.useState<number>(0);
+    const [dragOffset, setDragOffset] = React.useState(0);
+    const hasMultiple = testimonials.length > 1;
+
+    const CARD_HEIGHT = 248;
+
+    const prevIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
+    const nextIndex = (currentIndex + 1) % testimonials.length;
+    const previewIndex = dragOffset > 0 ? prevIndex : nextIndex;
+    const previewReveal = Math.min(1, Math.abs(dragOffset) / 140);
+
+    const renderCardContent = (testimonial: Testimonial) => (
+      <div className="p-5 flex flex-col items-center gap-2.5">
+        <img
+          src={testimonial.avatar}
+          alt={testimonial.name}
+          className="w-16 h-16 rounded-full object-cover"
+        />
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-foreground">
+          {testimonial.name}
+        </h3>
+        <p className="testimonial-product">{testimonial.productName}</p>
+        <div className="testimonial-stars" aria-label={`${testimonial.rating} out of 5`}>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <span
+              key={index}
+              className={
+                index < testimonial.rating
+                  ? "testimonial-star is-filled"
+                  : "testimonial-star"
+              }
+            >
+              ★
+            </span>
+          ))}
+        </div>
+        <p className="testimonial-review">{testimonial.description}</p>
+      </div>
+    );
+
+    const advance = React.useCallback(
+      (direction: 1 | -1) => {
+        if (testimonials.length <= 1) {
+          return;
+        }
+        setCurrentIndex((prev) =>
+          direction === 1
+            ? (prev + 1) % testimonials.length
+            : (prev - 1 + testimonials.length) % testimonials.length
+        );
+        setDragOffset(0);
+      },
+      [testimonials.length]
+    );
+
+    const goNext = React.useCallback(() => advance(1), [advance]);
+    const goPrev = React.useCallback(() => advance(-1), [advance]);
 
     const handleDragEnd = (
-      event: MouseEvent | TouchEvent | PointerEvent,
+      _event: MouseEvent | TouchEvent | PointerEvent,
       info: PanInfo
     ) => {
-      if (Math.abs(info.offset.x) > 100) {
-        setExitX(info.offset.x);
-        setTimeout(() => {
-          setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-          setExitX(0);
-        }, 200);
+      if (info.offset.x > 80) {
+        goPrev();
+        return;
       }
+      if (info.offset.x < -80) {
+        goNext();
+        return;
+      }
+      setDragOffset(0);
     };
 
     return (
       <div
         ref={ref}
-        className={cn("h-72 w-full flex items-center justify-center", className)}
+        className={cn("w-full flex items-center justify-center", className)}
         {...props}
       >
-        <div className="relative w-80 h-64">
+        <div className="relative w-80" style={{ height: `${CARD_HEIGHT}px` }}>
+          {hasMultiple ? (
+            <motion.div
+              className={cn(
+                "absolute w-full h-full rounded-2xl",
+                "bg-white shadow-xl",
+                "dark:bg-card dark:shadow-[2px_2px_4px_rgba(0,0,0,0.4),-1px_-1px_3px_rgba(255,255,255,0.1)]"
+              )}
+              style={{
+                zIndex: 1,
+                opacity: 0.28 + previewReveal * 0.48,
+                scale: 0.95 + previewReveal * 0.05
+              }}
+              transition={{ type: "spring", stiffness: 300, damping: 28 }}
+            >
+              {renderCardContent(testimonials[previewIndex])}
+            </motion.div>
+          ) : null}
           {testimonials.map((testimonial, index) => {
             const isCurrentCard = index === currentIndex;
-            const isPrevCard =
-              index === (currentIndex + 1) % testimonials.length;
-            const isNextCard =
-              index === (currentIndex + 2) % testimonials.length;
 
-            if (!isCurrentCard && !isPrevCard && !isNextCard) return null;
+            if (!isCurrentCard) return null;
 
             return (
               <motion.div
@@ -66,73 +136,61 @@ const TestimonialCarousel = React.forwardRef<
                   "bg-white shadow-xl",
                   "dark:bg-card dark:shadow-[2px_2px_4px_rgba(0,0,0,0.4),-1px_-1px_3px_rgba(255,255,255,0.1)]"
                 )}
-                style={{
-                  zIndex: isCurrentCard ? 3 : isPrevCard ? 2 : 1
-                }}
+                style={{ zIndex: 3 }}
                 drag={isCurrentCard ? "x" : false}
                 dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.7}
+                dragElastic={0.18}
+                onDrag={
+                  isCurrentCard
+                    ? (_event, info) => setDragOffset(info.offset.x)
+                    : undefined
+                }
                 onDragEnd={isCurrentCard ? handleDragEnd : undefined}
                 initial={{
-                  scale: 0.95,
+                  scale: 0.98,
                   opacity: 0,
-                  y: isCurrentCard ? 0 : isPrevCard ? 8 : 16,
-                  rotate: isCurrentCard ? 0 : isPrevCard ? -2 : -4
+                  y: 8,
+                  rotate: 0
                 }}
                 animate={{
-                  scale: isCurrentCard ? 1 : 0.95,
-                  opacity: isCurrentCard ? 1 : isPrevCard ? 0.6 : 0.3,
-                  x: isCurrentCard ? exitX : 0,
-                  y: isCurrentCard ? 0 : isPrevCard ? 8 : 16,
-                  rotate: isCurrentCard ? exitX / 20 : isPrevCard ? -2 : -4
+                  scale: 1,
+                  opacity: 1,
+                  x: 0,
+                  y: 0,
+                  rotate: 0
                 }}
                 transition={{
                   type: "spring",
-                  stiffness: 300,
-                  damping: 20
+                  stiffness: 340,
+                  damping: 30
                 }}
               >
-                {showArrows && isCurrentCard && (
+                {showArrows && hasMultiple && isCurrentCard && (
                   <>
-                    <button type="button" className="testimonial-arrow testimonial-arrow--left">
+                    <button
+                      type="button"
+                      className="testimonial-arrow testimonial-arrow--left"
+                      onClick={goPrev}
+                      aria-label="Previous review"
+                    >
                       <span aria-hidden="true">←</span>
                     </button>
-                    <button type="button" className="testimonial-arrow testimonial-arrow--right">
+                    <button
+                      type="button"
+                      className="testimonial-arrow testimonial-arrow--right"
+                      onClick={goNext}
+                      aria-label="Next review"
+                    >
                       <span aria-hidden="true">→</span>
                     </button>
                   </>
                 )}
 
-                <div className="p-6 flex flex-col items-center gap-3">
-                  <img
-                    src={testimonial.avatar}
-                    alt={testimonial.name}
-                    className="w-16 h-16 rounded-full object-cover"
-                  />
-                  <h3 className="text-lg font-semibold text-gray-800 dark:text-foreground">
-                    {testimonial.name}
-                  </h3>
-                  <p className="testimonial-product">{testimonial.productName}</p>
-                  <div className="testimonial-stars" aria-label={`${testimonial.rating} out of 5`}>
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <span
-                        key={index}
-                        className={
-                          index < testimonial.rating
-                            ? "testimonial-star is-filled"
-                            : "testimonial-star"
-                        }
-                      >
-                        ★
-                      </span>
-                    ))}
-                  </div>
-                  <p className="testimonial-review">{testimonial.description}</p>
-                </div>
+                {renderCardContent(testimonial)}
               </motion.div>
             );
           })}
-          {showDots && (
+          {showDots && hasMultiple && (
             <div className="absolute -bottom-8 left-0 right-0 flex justify-center gap-2">
               {testimonials.map((_, index) => (
                 <div

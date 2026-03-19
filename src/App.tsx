@@ -48,7 +48,7 @@ const viewTitles: Record<View, string> = {
 
 type AppProps = {};
 export default function App() {
-  const { guest, isIdentified, addPlacedOrderId } = useGuestSession();
+  const { guest, isIdentified, addPlacedOrderId, addCustomRequest } = useGuestSession();
   const { items, subtotal, clearCart, addCustomOrder, removeItem } = useCart();
   const { isAuthenticated: isAdmin } = useAdminSession();
   const { toast, showToast, clearToast } = useAlertToast();
@@ -91,6 +91,13 @@ export default function App() {
     }
     try {
       const result = await api.placeCustomOrder(payload);
+      addCustomRequest({
+        id: result.id,
+        occasion: payload.occasion,
+        description: payload.description,
+        budgetInr: payload.estimatedPriceInr,
+        createdAt: new Date().toISOString()
+      });
       addCustomOrder({
         id: result.id,
         name: `Custom Order: ${payload.occasion}`,

@@ -15,7 +15,7 @@ type CheckoutPageProps = {
 const BAKERY_UPI_ID = "8828094471@upi";
 
 export const CheckoutPage = ({ onOrderPlaced, onNavigateProfile, onToast }: CheckoutPageProps) => {
-	const { guest, isIdentified, addPlacedOrderId } = useGuestSession();
+	const { guest, addPlacedOrderId } = useGuestSession();
 	const { address } = useAddressBook();
 	const { items, subtotal, clearCart } = useCart();
 	const [sale, setSale] = useState<SaleConfig | null>(null);
@@ -28,6 +28,7 @@ export const CheckoutPage = ({ onOrderPlaced, onNavigateProfile, onToast }: Chec
 	const [isPlacing, setIsPlacing] = useState(false);
 	const [showProfilePrompt, setShowProfilePrompt] = useState(false);
 	const [paymentMethod, setPaymentMethod] = useState<"UPI" | "COD">("UPI");
+	const [nameOnOrder, setNameOnOrder] = useState(guest.name);
 	const [upiRefId, setUpiRefId] = useState("");
 	const [copied, setCopied] = useState(false);
 	const couponStorageKey = "bakersfield.cartCoupon";
@@ -80,11 +81,13 @@ export const CheckoutPage = ({ onOrderPlaced, onNavigateProfile, onToast }: Chec
 	const total = useMemo(() => {
 		return Math.max(0, subtotal - saleDiscount - couponDiscount);
 	}, [subtotal, saleDiscount, couponDiscount]);
+	const roundedTotal = useMemo(() => Math.round(total), [total]);
+	const roundingAdjustment = useMemo(() => roundedTotal - total, [roundedTotal, total]);
 
 	const upiUri = useMemo(() => {
 		const pn = encodeURIComponent("BakersField");
-		return `upi://pay?pa=${BAKERY_UPI_ID}&pn=${pn}&am=${total}&cu=INR`;
-	}, [total]);
+		return `upi://pay?pa=${BAKERY_UPI_ID}&pn=${pn}&am=${roundedTotal}&cu=INR`;
+	}, [roundedTotal]);
 
 	const totalDiscountAmount = saleDiscount + couponDiscount;
 	const totalDiscountPercent = subtotal > 0
@@ -99,9 +102,6 @@ export const CheckoutPage = ({ onOrderPlaced, onNavigateProfile, onToast }: Chec
 	}, [guest.name]);
 	const missingDetails = useMemo(() => {
 		const missing: string[] = [];
-		if (!guest.name.trim()) {
-			missing.push("Name");
-		}
 		if (!guest.phone.trim()) {
 			missing.push("Phone number");
 		}
@@ -109,7 +109,11 @@ export const CheckoutPage = ({ onOrderPlaced, onNavigateProfile, onToast }: Chec
 			missing.push("Pin code");
 		}
 		return missing;
-	}, [address.pinCode, guest.name, guest.phone]);
+	}, [address.pinCode, guest.phone]);
+
+	useEffect(() => {
+		setNameOnOrder((current) => (current ? current : guest.name));
+	}, [guest.name]);
 
 	const handleApplyCoupon = async () => {
 		const trimmed = couponCode.trim().toUpperCase();
@@ -195,7 +199,7 @@ export const CheckoutPage = ({ onOrderPlaced, onNavigateProfile, onToast }: Chec
 			onToast({ type: "error", message: "Please enter your UPI Transaction ID to verify payment." });
 			return;
 		}
-		if (!isIdentified || !address.pinCode.trim()) {
+		if (!guest.phone.trim() || !address.pinCode.trim()) {
 			setShowProfilePrompt(true);
 			return;
 		}
@@ -215,7 +219,7 @@ export const CheckoutPage = ({ onOrderPlaced, onNavigateProfile, onToast }: Chec
 					};
 				});
 			const result = await api.placeOrder({
-				customerName: guest.name,
+				customerName: nameOnOrder.trim() || guest.name || "Guest",
 				phoneNumber: guest.phone,
 				pinCode: address.pinCode,
 				addressLabel: address.label,
@@ -223,7 +227,7 @@ export const CheckoutPage = ({ onOrderPlaced, onNavigateProfile, onToast }: Chec
 				addressLine2: address.line2,
 				addressCity: address.city,
 				addressState: address.state,
-				totalAmountInr: total,
+				totalAmountInr: roundedTotal,
 				subtotalAmountInr: subtotal,
 				couponCode: appliedCoupon ?? undefined,
 				itemCount,
@@ -254,7 +258,7 @@ export const CheckoutPage = ({ onOrderPlaced, onNavigateProfile, onToast }: Chec
 				<p className="eyebrow">Final step</p>
 				<h2>Ready to place your order, {customerFirstName}?</h2>
 				<p className="muted">
-					{itemCount} item{itemCount === 1 ? "" : "s"} in review for <strong>₹{total}</strong>. No hidden charges, just clear totals.
+					{itemCount} item{itemCount === 1 ? "" : "s"} in review for <strong>₹{roundedTotal}</strong>. No hidden charges, just clear totals.
 				</p>
 				<div className="checkout-hero__chips" aria-label="Checkout trust points">
 					<span>Secure UPI</span>
@@ -349,9 +353,15 @@ export const CheckoutPage = ({ onOrderPlaced, onNavigateProfile, onToast }: Chec
 						<strong>-₹{couponDiscount}</strong>
 					</div>
 				) : null}
+				{Math.abs(roundingAdjustment) >= 0.01 ? (
+					<div className="summary-line--sub">
+						<span>Rounded Off</span>
+						<strong>{roundingAdjustment >= 0 ? "+" : "-"}₹{Math.abs(roundingAdjustment).toFixed(2)}</strong>
+					</div>
+				) : null}
 				<div>
 					<span>Total</span>
-					<strong>₹{total}</strong>
+					<strong>₹{roundedTotal}</strong>
 				</div>
 			</div>
 
@@ -359,6 +369,14 @@ export const CheckoutPage = ({ onOrderPlaced, onNavigateProfile, onToast }: Chec
 				<div className="profile-card__header">
 					<h3>Payment Method</h3>
 				</div>
+				<label className="checkout-name-field">
+					<strong>Name on order (optional)</strong>
+					<input
+						value={nameOnOrder}
+						onChange={(event) => setNameOnOrder(event.target.value)}
+						placeholder="Type a name for this order"
+					/>
+				</label>
 				<div className="payment-method-switch" role="tablist" aria-label="Payment method">
 					<button
 						className={`payment-method-switch__button ${paymentMethod === "UPI" ? "is-active" : ""}`}
@@ -382,7 +400,7 @@ export const CheckoutPage = ({ onOrderPlaced, onNavigateProfile, onToast }: Chec
 
 				{paymentMethod === "UPI" ? (
 					<div className="upi-payment-card">
-						<p className="muted payment-note">Scan to pay exactly <strong>₹{total}</strong> or tap on mobile to open UPI app.</p>
+						<p className="muted payment-note">Scan to pay exactly <strong>₹{roundedTotal}</strong> or tap on mobile to open UPI app.</p>
 						<div className="upi-qr-block">
 							<QRCodeSVG value={upiUri} size={200} />
 							<a href={upiUri} className="primary upi-pay-link">
@@ -423,7 +441,7 @@ export const CheckoutPage = ({ onOrderPlaced, onNavigateProfile, onToast }: Chec
 						</label>
 					</div>
 				) : (
-					<p className="muted cod-note">You will pay <strong>₹{total}</strong> with cash when your freshly baked order arrives.</p>
+					<p className="muted cod-note">You will pay <strong>₹{roundedTotal}</strong> with cash when your freshly baked order arrives.</p>
 				)}
 			</section>
 
@@ -435,7 +453,7 @@ export const CheckoutPage = ({ onOrderPlaced, onNavigateProfile, onToast }: Chec
 			>
 				{isPlacing ? "Placing..." : "Place Order"}
 			</button>
-			{!isIdentified || !address.pinCode.trim() ? (
+			{!guest.phone.trim() || !address.pinCode.trim() ? (
 				<button
 					className="checkout-missing-note"
 					type="button"

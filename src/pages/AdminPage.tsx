@@ -3211,7 +3211,7 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
           <section className="admin-coupon-list">
             <div className="admin-coupon-list__header">
               <h3>All Coupons</h3>
-              <button className="ghost" type="button">
+              <button className="link-button" type="button">
                 See all
               </button>
             </div>

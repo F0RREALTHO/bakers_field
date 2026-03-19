@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api, type Order, type SaleConfig } from "../api";
+import { openWhatsAppChat } from "../lib/contact";
 import type { AlertToastState } from "../hooks/useAlertToast";
 import { useCart } from "../hooks/useCart";
 import { useGuestSession } from "../hooks/useGuestSession";
@@ -12,7 +13,7 @@ type CartPageProps = {
 
 export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps) => {
   const { items, subtotal, updateQuantity, removeItem } = useCart();
-  const { guest, addPlacedOrderId } = useGuestSession();
+  const { guest } = useGuestSession();
   const hasCustomItem = items.some((item) => item.itemType === "CUSTOM");
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
   const [sale, setSale] = useState<SaleConfig | null>(null);
@@ -22,7 +23,12 @@ export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps)
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [isApplying, setIsApplying] = useState(false);
+  const [nameOnOrder, setNameOnOrder] = useState(guest.name);
   const couponStorageKey = "bakersfield.cartCoupon";
+
+  useEffect(() => {
+    setNameOnOrder((current) => (current ? current : guest.name));
+  }, [guest.name]);
 
   useEffect(() => {
     const loadSale = async () => {
@@ -51,6 +57,8 @@ export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps)
   }, [sale, subtotal]);
 
   const totalAmount = Math.max(0, subtotal - saleDiscount - couponDiscount);
+  const roundedTotalAmount = Math.round(totalAmount);
+  const roundingAdjustment = roundedTotalAmount - totalAmount;
 
   const handleApplyCoupon = async () => {
     const trimmed = couponCode.trim().toUpperCase();
@@ -105,13 +113,26 @@ export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps)
     const customItem = items.find(i => i.itemType === "CUSTOM");
     if (!customItem) return;
 
+    const message = [
+      "Hi BakersField, I want to confirm my custom cake request.",
+      `Request ID: #${customItem.itemId}`,
+      `Name: ${nameOnOrder.trim() || guest.name || "Guest"}`,
+      `Phone: ${guest.phone || "Not provided"}`,
+      customItem.priceInr > 0 ? `Budget: ₹${customItem.priceInr}` : null,
+      customItem.details ? `Details: ${customItem.details}` : null
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    openWhatsAppChat(message);
+
     const pseudoOrder: Order = {
       id: customItem.itemId,
-      customerName: guest.name || "Guest",
+      customerName: nameOnOrder.trim() || guest.name || "Guest",
       phoneNumber: guest.phone || "",
       pinCode: "",
-      totalAmountInr: totalAmount,
-      subtotalAmountInr: totalAmount,
+      totalAmountInr: 0,
+      subtotalAmountInr: 0,
       paymentMethod: "WHATSAPP",
       paymentProvider: "WHATSAPP",
       paymentStatus: "PENDING",
@@ -123,13 +144,28 @@ export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps)
         itemName: customItem.name,
         unitPriceInr: customItem.priceInr,
         quantity: customItem.quantity,
-        lineTotalInr: customItem.priceInr * customItem.quantity
+        lineTotalInr: 0
       }]
     };
 
-    addPlacedOrderId(String(customItem.itemId));
     removeItem(customItem.itemId, "CUSTOM");
+    onToast({ type: "success", message: "WhatsApp chat opened. Please send the message to confirm." });
     onOrderSuccess(pseudoOrder);
+  };
+
+  const handleOpenCustomWhatsApp = () => {
+    const customItem = items.find(i => i.itemType === "CUSTOM");
+    if (!customItem) return;
+    const message = [
+      "Hi BakersField, I need help with my custom cake request.",
+      `Request ID: #${customItem.itemId}`,
+      `Name: ${nameOnOrder.trim() || guest.name || "Guest"}`,
+      `Phone: ${guest.phone || "Not provided"}`,
+      customItem.priceInr > 0 ? `Budget: ₹${customItem.priceInr}` : null
+    ]
+      .filter(Boolean)
+      .join("\n");
+    openWhatsAppChat(message);
   };
 
   const handleCheckout = () => {
@@ -155,14 +191,27 @@ export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps)
       {hasCustomItem ? (
         <div className="cart-cta-card">
           <div>
-            <p className="cart-cta-title">Next: WhatsApp Confirmation</p>
+            <p className="cart-cta-title">Next: Confirm on WhatsApp</p>
             <p className="muted">
-              A bot will message you to finalize custom design details and delivery slot.
+              Continue to confirm your custom request and finalize details directly on chat.
             </p>
+            <label className="checkout-name-field">
+              <strong>Name on order (optional)</strong>
+              <input
+                value={nameOnOrder}
+                onChange={(event) => setNameOnOrder(event.target.value)}
+                placeholder="Type a name for this order"
+              />
+            </label>
           </div>
-          <button className="primary" onClick={handleCustomConfirm} type="button">
-            Confirm Order via WhatsApp
-          </button>
+          <div className="cart-cta-card__actions">
+            <button className="primary" onClick={handleCustomConfirm} type="button">
+              Continue to Confirm
+            </button>
+            <button className="ghost" onClick={handleOpenCustomWhatsApp} type="button">
+              Open WhatsApp
+            </button>
+          </div>
         </div>
       ) : null}
         <div className="cart-coupon-card">
@@ -236,7 +285,9 @@ export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps)
                     ×
                   </button>
                 </div>
-                <p className="cart-item__price">₹{item.priceInr}</p>
+                <p className="cart-item__price">
+                  {item.itemType === "CUSTOM" ? "Price shared on confirmation" : `₹${item.priceInr}`}
+                </p>
                 <div className="cart-controls">
                   <button
                     className="pill"
@@ -266,26 +317,47 @@ export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps)
         </div>
       )}
       <div className="summary-card">
-        <div>
-          <span>Subtotal</span>
-          <strong>₹{subtotal}</strong>
-        </div>
-        {saleDiscount > 0 ? (
-          <div className="summary-line--discount">
-            <span>{saleName ? `Sale (${saleName})` : "Sale"}</span>
-            <strong>-₹{saleDiscount}</strong>
-          </div>
-        ) : null}
-        {couponDiscount > 0 ? (
-          <div className="summary-line--discount">
-            <span>Discount</span>
-            <strong>-₹{couponDiscount}</strong>
-          </div>
-        ) : null}
-        <div>
-          <span>Total</span>
-          <strong>₹{totalAmount}</strong>
-        </div>
+        {hasCustomItem ? (
+          <>
+            <div>
+              <span>Custom Request</span>
+              <strong>Quote on WhatsApp</strong>
+            </div>
+            <div>
+              <span>Status</span>
+              <strong>Awaiting confirmation</strong>
+            </div>
+          </>
+        ) : (
+          <>
+            <div>
+              <span>Subtotal</span>
+              <strong>₹{subtotal}</strong>
+            </div>
+            {saleDiscount > 0 ? (
+              <div className="summary-line--discount">
+                <span>{saleName ? `Sale (${saleName})` : "Sale"}</span>
+                <strong>-₹{saleDiscount}</strong>
+              </div>
+            ) : null}
+            {couponDiscount > 0 ? (
+              <div className="summary-line--discount">
+                <span>Discount</span>
+                <strong>-₹{couponDiscount}</strong>
+              </div>
+            ) : null}
+            {Math.abs(roundingAdjustment) >= 0.01 ? (
+              <div className="summary-line--sub">
+                <span>Rounded Off</span>
+                <strong>{roundingAdjustment >= 0 ? "+" : "-"}₹{Math.abs(roundingAdjustment).toFixed(2)}</strong>
+              </div>
+            ) : null}
+            <div>
+              <span>Total</span>
+              <strong>₹{roundedTotalAmount}</strong>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

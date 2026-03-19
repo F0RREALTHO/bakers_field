@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { openWhatsAppChat } from "../lib/contact";
 import type { AlertToastState } from "../hooks/useAlertToast";
 import { useAddressBook } from "../hooks/useAddressBook";
 import { useCart } from "../hooks/useCart";
@@ -43,6 +44,7 @@ export const GuestInfoPage = ({ onToast, onNavigate }: GuestInfoPageProps) => {
     nickname: guest.nickname,
     phone: guest.phone
   });
+  const [contactMessage, setContactMessage] = useState("");
   const greetingName = form.nickname.trim() || "Foodie!";
   const hasEmail = guest.name.trim() || guest.phone.trim();
   const guestEmail = hasEmail
@@ -78,6 +80,24 @@ export const GuestInfoPage = ({ onToast, onNavigate }: GuestInfoPageProps) => {
       phone: form.phone.trim()
     });
     onToast({ type: "success", message: "Guest profile saved." });
+  };
+
+  const handleContactSend = () => {
+    const trimmed = contactMessage.trim();
+    if (!trimmed) {
+      onToast({ type: "error", message: "Please enter your message." });
+      return;
+    }
+
+    const message = [
+      "Hi BakersField team, I need support.",
+      `Name: ${form.name.trim() || guest.name || "Guest"}`,
+      `Phone: ${form.phone.trim() || guest.phone || "Not provided"}`,
+      `Message: ${trimmed}`
+    ].join("\n");
+
+    openWhatsAppChat(message);
+    onToast({ type: "success", message: "Opening WhatsApp chat." });
   };
 
   return (
@@ -154,6 +174,18 @@ export const GuestInfoPage = ({ onToast, onNavigate }: GuestInfoPageProps) => {
           <span className="profile-action__meta">
             <strong>Preferences</strong>
             <span>Manage your taste and theme</span>
+          </span>
+          <span className="profile-action__arrow">&gt;</span>
+        </button>
+        <button
+          className="profile-action"
+          type="button"
+          onClick={() => scrollToSection("contact-us-section")}
+        >
+          <span className="profile-action__icon">C</span>
+          <span className="profile-action__meta">
+            <strong>Contact Us</strong>
+            <span>Send a support message</span>
           </span>
           <span className="profile-action__arrow">&gt;</span>
         </button>
@@ -296,6 +328,25 @@ export const GuestInfoPage = ({ onToast, onNavigate }: GuestInfoPageProps) => {
               />
             </label>
           </div>
+        </section>
+
+        <section className="profile-card" id="contact-us-section">
+          <div className="profile-card__header">
+            <h3>Contact Us</h3>
+            <p className="muted">Send a message and we will help you quickly on WhatsApp.</p>
+          </div>
+          <label>
+            Your Message
+            <textarea
+              value={contactMessage}
+              onChange={(event) => setContactMessage(event.target.value)}
+              rows={4}
+              placeholder="Tell us what you need help with..."
+            />
+          </label>
+          <button className="primary" type="button" onClick={handleContactSend}>
+            Contact Us on WhatsApp
+          </button>
         </section>
 
         <div className="profile-cta">

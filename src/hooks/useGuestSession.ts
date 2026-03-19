@@ -6,6 +6,15 @@ export type GuestSession = {
   phone: string;
   avatar?: string;
   placedOrderIds: string[];
+  customRequests: CustomRequest[];
+};
+
+export type CustomRequest = {
+  id: number;
+  occasion: string;
+  description: string;
+  budgetInr?: number;
+  createdAt: string;
 };
 
 const STORAGE_KEY = "bakersfield.guestSession";
@@ -15,7 +24,8 @@ const emptyGuest: GuestSession = {
   nickname: "",
   phone: "",
   avatar: "",
-  placedOrderIds: []
+  placedOrderIds: [],
+  customRequests: []
 };
 
 const readGuestSession = (): GuestSession => {
@@ -30,6 +40,9 @@ const readGuestSession = (): GuestSession => {
       ...parsed,
       placedOrderIds: Array.isArray(parsed.placedOrderIds)
         ? parsed.placedOrderIds
+        : [],
+      customRequests: Array.isArray(parsed.customRequests)
+        ? parsed.customRequests
         : []
     };
   } catch {
@@ -107,12 +120,29 @@ export const useGuestSession = () => {
     persist(emptyGuest);
   }, [persist]);
 
+  const addCustomRequest = useCallback(
+    (request: CustomRequest) => {
+      if (!request?.id) {
+        return;
+      }
+      if (guest.customRequests.some((item) => item.id === request.id)) {
+        return;
+      }
+      persist({
+        ...guest,
+        customRequests: [request, ...guest.customRequests]
+      });
+    },
+    [guest, persist]
+  );
+
   return {
     guest,
     isIdentified,
     identifyGuest,
     updateGuest,
     addPlacedOrderId,
+    addCustomRequest,
     clearGuestSession
   };
 };
