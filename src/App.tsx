@@ -16,14 +16,12 @@ import { HomePage } from "./pages/HomePage";
 import { CartPage } from "./pages/CartPage";
 import { FavoritesPage } from "./pages/FavoritesPage";
 import { MenuPage } from "./pages/MenuPage";
+import { CheckoutPage } from "./pages/CheckoutPage";
 import { GuestInfoPage } from "./pages/GuestInfoPage";
 import ProductDetail from "./pages/ProductDetail";
 import ComboDetail from "./pages/ComboDetail";
 
-// Lazy load: admin, checkout, orders, reviews, staff login (accessed less frequently)
-const CheckoutPage = lazy(() =>
-  import("./pages/CheckoutPage").then((module) => ({ default: module.CheckoutPage }))
-);
+// Lazy load: admin, orders, reviews, staff login (accessed less frequently)
 const AdminPage = lazy(() =>
   import("./pages/AdminPage").then((module) => ({ default: module.AdminPage }))
 );
@@ -207,13 +205,11 @@ export default function App() {
         );
       case "checkout":
         return (
-          <Suspense fallback={<PageLoader />}>
-            <CheckoutPage
-              onOrderPlaced={handleOrderSuccess}
-              onNavigateProfile={() => handleNavigate("profile")}
-              onToast={showToast}
-            />
-          </Suspense>
+          <CheckoutPage
+            onOrderPlaced={handleOrderSuccess}
+            onNavigateProfile={() => handleNavigate("profile")}
+            onToast={showToast}
+          />
         );
       case "orders":
         return (
