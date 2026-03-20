@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { CustomOrderRequest } from "../api";
+import { api, type CustomOrderRequest } from "../api";
 import type { GuestSession } from "../hooks/useGuestSession";
 
 type CustomOrderModalProps = {
@@ -46,6 +46,8 @@ export const CustomOrderModal = ({
   const [form, setForm] = useState(initialForm);
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [descriptionMissingHint, setDescriptionMissingHint] = useState(false);
   const [customSizeMissingHint, setCustomSizeMissingHint] = useState(false);
   const [customFlavorMissingHint, setCustomFlavorMissingHint] = useState(false);
@@ -56,6 +58,8 @@ export const CustomOrderModal = ({
       setForm(initialForm);
       setStep(1);
       setSubmitting(false);
+      setUploading(false);
+      setUploadError(null);
       setDescriptionMissingHint(false);
       setCustomSizeMissingHint(false);
       setCustomFlavorMissingHint(false);
@@ -138,27 +142,29 @@ export const CustomOrderModal = ({
       return;
     }
 
-    const toDataUrl = (file: File) =>
-      new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = () => reject(new Error("Unable to read image"));
-        reader.readAsDataURL(file);
-      });
-
     try {
-      const selectedUrls = await Promise.all(files.map(toDataUrl));
-      setForm((prev) => {
-        const combined = [...prev.imageUrls, ...selectedUrls];
-        const limited = combined.slice(0, 3);
-        if (combined.length > 3) {
-          alert("You can upload a maximum of 3 reference photos.");
-        }
-        return { ...prev, imageUrls: limited };
-      });
+      setUploading(true);
+      setUploadError(null);
+      const availableSlots = Math.max(0, 3 - form.imageUrls.length);
+      const selectedFiles = files.slice(0, availableSlots);
+      if (selectedFiles.length < files.length) {
+        alert("You can upload a maximum of 3 reference photos.");
+      }
+
+      const uploadedUrls: string[] = [];
+      for (const file of selectedFiles) {
+        const result = await api.uploadImage(file);
+        uploadedUrls.push(result.url);
+      }
+
+      setForm((prev) => ({
+        ...prev,
+        imageUrls: [...prev.imageUrls, ...uploadedUrls]
+      }));
     } catch {
-      alert("Unable to read one or more images. Please try again.");
+      setUploadError("Unable to upload one or more images. Please try again.");
     } finally {
+      setUploading(false);
       e.target.value = "";
     }
   };
@@ -263,7 +269,9 @@ export const CustomOrderModal = ({
                     ? `${form.imageUrls.length}/3 selected. You can add more.`
                     : "Show us design, shape, colors, or theme"}
                 </span>
-                <span className="custom-upload__cta">{form.imageUrls.length ? "Add / Change Photos" : "Choose Photos"}</span>
+                <span className="custom-upload__cta">
+                  {uploading ? "Uploading..." : form.imageUrls.length ? "Add / Change Photos" : "Choose Photos"}
+                </span>
                 <input
                   type="file"
                   accept="image/*"
@@ -272,16 +280,22 @@ export const CustomOrderModal = ({
                   className="sr-only"
                   style={{ display: "none" }}
                   required
+                  disabled={uploading}
                 />
               </label>
+              {uploadError ? <p className="custom-field__error">{uploadError}</p> : null}
               {form.imageUrls.length > 0 && (
                 <div className="custom-upload__preview-wrap">
                   <div className="custom-upload__preview-grid">
                     {form.imageUrls.map((imageUrl, index) => (
                       <div key={`${index}-${imageUrl.slice(0, 24)}`} className="custom-upload__preview-card">
-                        <div
+                        <a
                           className="custom-upload__preview"
                           style={{ backgroundImage: `url(${imageUrl})` }}
+                          href={imageUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`Open reference photo ${index + 1} in new tab`}
                         />
                         <button
                           type="button"
@@ -307,7 +321,7 @@ export const CustomOrderModal = ({
               className="primary primary--wide" 
               type="button" 
               onClick={handleStepOneContinue}
-              disabled={form.imageUrls.length === 0}
+              disabled={form.imageUrls.length === 0 || uploading}
             >
               Continue to Preferences
             </button>

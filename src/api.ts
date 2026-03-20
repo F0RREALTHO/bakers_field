@@ -213,6 +213,10 @@ export type CustomOrderRequest = {
   estimatedPriceInr: number;
 };
 
+export type UploadImageResponse = {
+  url: string;
+};
+
 export type AdminLoginRequest = {
   username: string;
   password: string;
@@ -319,6 +323,25 @@ const request = async <T>(path: string, options: RequestOptions = {}) => {
   return JSON.parse(bodyText) as T;
 };
 
+const uploadRequest = async <T>(path: string, formData: FormData) => {
+  const response = await fetch(`${API_BASE}${path}`, {
+    method: "POST",
+    body: formData
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Upload failed");
+  }
+
+  const bodyText = await response.text();
+  if (!bodyText) {
+    return null as T;
+  }
+
+  return JSON.parse(bodyText) as T;
+};
+
 const adminRequest = async <T>(
   path: string,
   token: string,
@@ -368,6 +391,11 @@ export const api = {
       method: "POST",
       body: payload
     }),
+  uploadImage: (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return uploadRequest<UploadImageResponse>("/api/uploads", formData);
+  },
   adminRequestOtp: (payload: AdminRequestOtpPayload) =>
     request<AdminRequestOtpResponse>("/api/admin/x7k2m9n5b3v1w4q6z2a4m8p0/login/request-otp", {
       method: "POST",

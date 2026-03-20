@@ -1,0 +1,15 @@
+name = "bakersfield-frontend"
+type = "javascript"
+account_id = ""  # Add your Cloudflare Account ID
+workers_dev = false
+
+# Cloudflare Pages configuration
+[env.production]
+routes = [{pattern = "fieldbakers.me/*", zone_name = "fieldbakers.me"}]
+
+# Environment variables
+[env.production.vars]
+VITE_API_BASE = "https://api.fieldbakers.me"  # Update this to your backend URL
+
+[env.development]
+VITE_API_BASE = "http://localhost:8080"
