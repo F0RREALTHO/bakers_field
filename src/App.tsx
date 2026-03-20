@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { api, type Combo, type Order, type Product } from "./api";
 import { AlertToast } from "./components/AlertToast";
 import { BottomNav } from "./components/BottomNav/BottomNav";
@@ -10,19 +10,41 @@ import { useAlertToast } from "./hooks/useAlertToast";
 import { useCart } from "./hooks/useCart";
 import { useGuestSession } from "./hooks/useGuestSession";
 import { useTheme } from "./hooks/useTheme";
-import { CartPage } from "./pages/CartPage";
-import { CheckoutPage } from "./pages/CheckoutPage";
-import { AdminPage } from "./pages/AdminPage";
-import { FavoritesPage } from "./pages/FavoritesPage";
-import { GuestInfoPage } from "./pages/GuestInfoPage";
+
+// Eager load: home page, cart, favorites (likely to be accessed immediately)
 import { HomePage } from "./pages/HomePage";
+import { CartPage } from "./pages/CartPage";
+import { FavoritesPage } from "./pages/FavoritesPage";
 import { MenuPage } from "./pages/MenuPage";
-import { MyOrdersPage } from "./pages/MyOrdersPage";
-import ComboDetail from "./pages/ComboDetail";
+import { GuestInfoPage } from "./pages/GuestInfoPage";
 import ProductDetail from "./pages/ProductDetail";
-import { StaffLoginPage } from "./pages/StaffLoginPage";
+import ComboDetail from "./pages/ComboDetail";
+
+// Lazy load: admin, checkout, orders, reviews, staff login (accessed less frequently)
+const CheckoutPage = lazy(() =>
+  import("./pages/CheckoutPage").then((module) => ({ default: module.CheckoutPage }))
+);
+const AdminPage = lazy(() =>
+  import("./pages/AdminPage").then((module) => ({ default: module.AdminPage }))
+);
+const MyOrdersPage = lazy(() =>
+  import("./pages/MyOrdersPage").then((module) => ({ default: module.MyOrdersPage }))
+);
+const StaffLoginPage = lazy(() =>
+  import("./pages/StaffLoginPage").then((module) => ({ default: module.StaffLoginPage }))
+);
+const ReviewsPage = lazy(() =>
+  import("./pages/ReviewsPage").then((module) => ({ default: module.ReviewsPage }))
+);
+
 import { useAdminSession } from "./hooks/useAdminSession";
-import { ReviewsPage } from "./pages/ReviewsPage";
+
+// Loading fallback component
+const PageLoader = () => (
+  <div style={{ padding: "2rem", textAlign: "center" }}>
+    <p style={{ color: "var(--muted)" }}>Loading...</p>
+  </div>
+);
 
 type View =
   | "home"
@@ -174,20 +196,34 @@ export default function App() {
         );
       case "checkout":
         return (
-          <CheckoutPage
-            onOrderPlaced={handleOrderSuccess}
-            onNavigateProfile={() => handleNavigate("profile")}
-            onToast={showToast}
-          />
+          <Suspense fallback={<PageLoader />}>
+            <CheckoutPage
+              onOrderPlaced={handleOrderSuccess}
+              onNavigateProfile={() => handleNavigate("profile")}
+              onToast={showToast}
+            />
+          </Suspense>
         );
       case "orders":
-        return <MyOrdersPage onToast={showToast} />;
+        return (
+          <Suspense fallback={<PageLoader />}>
+            <MyOrdersPage onToast={showToast} />
+          </Suspense>
+        );
       case "profile":
         return <GuestInfoPage onToast={showToast} onNavigate={handleNavigate as (view: string) => void} />;
       case "staff":
-        return isAdmin ? <AdminPage onToast={showToast} /> : <StaffLoginPage onToast={showToast} />;
+        return (
+          <Suspense fallback={<PageLoader />}>
+            {isAdmin ? <AdminPage onToast={showToast} /> : <StaffLoginPage onToast={showToast} />}
+          </Suspense>
+        );
       case "reviews":
-        return <ReviewsPage onToast={showToast} />;
+        return (
+          <Suspense fallback={<PageLoader />}>
+            <ReviewsPage onToast={showToast} />
+          </Suspense>
+        );
       default:
         return null;
     }
