@@ -387,7 +387,7 @@ export const MenuPage = ({
                       </div>
                     ) : (
                       <button
-                        className="pill"
+                        className="pill primary"
                         type="button"
                         onClick={(event) => {
                           event.stopPropagation();

@@ -44,7 +44,7 @@ const TestimonialCarousel = React.forwardRef<
           alt={testimonial.name}
           className="w-16 h-16 rounded-full object-cover"
         />
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-foreground">
+        <h3 className="testimonial-name text-lg font-semibold text-gray-800 dark:text-foreground">
           {testimonial.name}
         </h3>
         <p className="testimonial-product">{testimonial.productName}</p>
