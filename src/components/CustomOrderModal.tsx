@@ -161,11 +161,8 @@ export const CustomOrderModal = ({
         ...prev,
         imageUrls: [...prev.imageUrls, ...uploadedUrls]
       }));
-    } catch (error) {
-      const message = error instanceof Error && error.message
-        ? error.message
-        : "Unable to upload one or more images. Please try again.";
-      setUploadError(message);
+    } catch {
+      setUploadError("Unable to upload one or more images. Please try again.");
     } finally {
       setUploading(false);
       e.target.value = "";
