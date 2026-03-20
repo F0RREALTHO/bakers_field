@@ -77,7 +77,14 @@ const ProductDetail = ({
           className={`detail-favorite ${
             isFavorite(product.id) ? "is-active" : ""
           }`}
-          onClick={() => toggleFavorite(product.id)}
+          onClick={() => {
+            const wasFavorite = isFavorite(product.id);
+            toggleFavorite(product.id);
+            onToast({
+              type: "favorite",
+              message: wasFavorite ? "Removed from favorites." : "Saved to favorites!"
+            });
+          }}
           type="button"
           aria-label={
             isFavorite(product.id)

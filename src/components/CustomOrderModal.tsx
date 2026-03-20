@@ -193,19 +193,24 @@ export const CustomOrderModal = ({
       <div className="modal__backdrop" onClick={onClose} />
       <div className="modal__content modal__content--wide" role="dialog" aria-modal="true">
         <header className="custom-header">
-          <button className="icon-button" onClick={onClose} type="button">
-            <span className="hamburger">
-              <span />
-              <span />
-              <span />
-            </span>
-          </button>
+          {step > 1 ? (
+            <button
+              className="icon-button"
+              onClick={prevStep}
+              type="button"
+              aria-label="Go back to previous step"
+            >
+              &lt;
+            </button>
+          ) : (
+            <span className="navbar__spacer" aria-hidden="true" />
+          )}
           <div>
             <p className="custom-title">Order a Custom Cake</p>
             <div className="custom-underline" />
           </div>
-          <button className="icon-button" onClick={onClose} type="button">
-            ?
+          <button className="icon-button" onClick={onClose} type="button" aria-label="Close custom order">
+            X
           </button>
         </header>
 

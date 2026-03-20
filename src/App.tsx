@@ -9,6 +9,7 @@ import { Sidebar } from "./components/Sidebar/Sidebar";
 import { useAlertToast } from "./hooks/useAlertToast";
 import { useCart } from "./hooks/useCart";
 import { useGuestSession } from "./hooks/useGuestSession";
+import { useTheme } from "./hooks/useTheme";
 import { CartPage } from "./pages/CartPage";
 import { CheckoutPage } from "./pages/CheckoutPage";
 import { AdminPage } from "./pages/AdminPage";
@@ -52,6 +53,7 @@ export default function App() {
   const { items, subtotal, clearCart, addCustomOrder, removeItem } = useCart();
   const { isAuthenticated: isAdmin } = useAdminSession();
   const { toast, showToast, clearToast } = useAlertToast();
+  const { theme } = useTheme();
   const [view, setView] = useState<View>("home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [customOrderOpen, setCustomOrderOpen] = useState(false);

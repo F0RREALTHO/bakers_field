@@ -4,6 +4,7 @@ import type { AlertToastState } from "../hooks/useAlertToast";
 import { useAddressBook } from "../hooks/useAddressBook";
 import { useCart } from "../hooks/useCart";
 import { useGuestSession } from "../hooks/useGuestSession";
+import { useTheme } from "../hooks/useTheme";
 
 type GuestInfoPageProps = {
   onToast: (toast: AlertToastState) => void;
@@ -39,6 +40,7 @@ export const GuestInfoPage = ({ onToast, onNavigate }: GuestInfoPageProps) => {
   const { guest, identifyGuest, clearGuestSession, updateGuest } = useGuestSession();
   const { address, updateAddress } = useAddressBook();
   const { clearCart } = useCart();
+  const { theme, setTheme } = useTheme();
   const [form, setForm] = useState({
     name: guest.name,
     nickname: guest.nickname,
@@ -168,7 +170,7 @@ export const GuestInfoPage = ({ onToast, onNavigate }: GuestInfoPageProps) => {
         <button
           className="profile-action"
           type="button"
-          onClick={() => onNavigate?.("menu")}
+          onClick={() => scrollToSection("theme-section")}
         >
           <span className="profile-action__icon">P</span>
           <span className="profile-action__meta">
@@ -261,6 +263,29 @@ export const GuestInfoPage = ({ onToast, onNavigate }: GuestInfoPageProps) => {
                 />
               </div>
             </label>
+          </div>
+        </section>
+
+        <section className="profile-card" id="theme-section">
+          <div className="profile-card__header">
+            <h3>App Theme</h3>
+            <p className="muted">Choose a visual style that fits your mood.</p>
+          </div>
+          <div className="theme-picker">
+            {(["default", "dark", "rose", "midnight"] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                className={`theme-option theme-option--${t} ${theme === t ? "is-active" : ""}`}
+                onClick={() => setTheme(t)}
+              >
+                <div className="theme-swatch">
+                  <span className="theme-dot theme-dot--primary" />
+                  <span className="theme-dot theme-dot--bg" />
+                </div>
+                <strong>{t.charAt(0).toUpperCase() + t.slice(1)}</strong>
+              </button>
+            ))}
           </div>
         </section>
 

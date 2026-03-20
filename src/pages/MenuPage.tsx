@@ -285,7 +285,12 @@ export const MenuPage = ({
                 }`}
                 onClick={(event) => {
                   event.stopPropagation();
+                  const wasFavorite = isFavorite(product.id);
                   toggleFavorite(product.id);
+                  onToast({
+                    type: "favorite",
+                    message: wasFavorite ? "Removed from favorites." : "Saved to favorites!"
+                  });
                 }}
                 type="button"
                 aria-label={

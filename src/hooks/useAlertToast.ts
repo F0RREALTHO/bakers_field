@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export type AlertToastState = {
-  type: "success" | "error";
+  type: "success" | "error" | "favorite";
   message: string;
 };
 

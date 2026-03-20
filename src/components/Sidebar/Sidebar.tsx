@@ -76,22 +76,20 @@ export const Sidebar = ({
           </div>
           <nav className="drawer-nav">
             {navItems.map((item) => (
-              <button
-                key={item.label}
-                className="drawer-link drawer-link--row"
-                onClick={() => {
-                  onNavigate(item.view);
-                  onOpenChange(false);
-                }}
-                type="button"
-              >
-                <span className="drawer-icon">{iconMap[item.icon]}</span>
-                <span className="drawer-link__meta">
-                  <span className="drawer-link__label">{item.label}</span>
-                  <span className="drawer-link__hint">{item.hint}</span>
-                </span>
-                <span className="chevron">&gt;</span>
-              </button>
+              <Dialog.Close key={item.label} asChild>
+                <button
+                  className="drawer-link drawer-link--row"
+                  onClick={() => onNavigate(item.view)}
+                  type="button"
+                >
+                  <span className="drawer-icon">{iconMap[item.icon]}</span>
+                  <span className="drawer-link__meta">
+                    <span className="drawer-link__label">{item.label}</span>
+                    <span className="drawer-link__hint">{item.hint}</span>
+                  </span>
+                  <span className="chevron">&gt;</span>
+                </button>
+              </Dialog.Close>
             ))}
             <button
               className="drawer-cta"
@@ -110,14 +108,16 @@ export const Sidebar = ({
             </button>
           </nav>
           <div className="drawer-footer">
-            <button
-              className="drawer-link drawer-link--plain"
-              onClick={() => onNavigate("staff")}
-              type="button"
-            >
-              <span className="drawer-footer__icon">{iconMap.lock}</span>
-              Owner Login
-            </button>
+            <Dialog.Close asChild>
+              <button
+                className="drawer-link drawer-link--plain"
+                onClick={() => onNavigate("staff")}
+                type="button"
+              >
+                <span className="drawer-footer__icon">{iconMap.lock}</span>
+                Owner Login
+              </button>
+            </Dialog.Close>
             <div className="drawer-footer__meta">
               <span>BakersField by Rashmi</span>
               <span>v2.4.0</span>

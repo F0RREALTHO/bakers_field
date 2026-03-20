@@ -93,7 +93,7 @@ export const HomePage = ({
           </span>
         </div>
       ) : null}
-      <div className="home-hero">
+      <div className="home-hero-dark">
         <div className="home-hero__media" />
         <div className="home-hero__content">
           <p className="eyebrow">New Arrivals</p>

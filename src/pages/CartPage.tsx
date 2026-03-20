@@ -11,8 +11,10 @@ type CartPageProps = {
   onToast: (toast: AlertToastState) => void;
 };
 
+import { ConfirmationModal } from "../components/ConfirmationModal";
+
 export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps) => {
-  const { items, subtotal, updateQuantity, removeItem } = useCart();
+  const { items, subtotal, updateQuantity, removeItem, clearCart } = useCart();
   const { guest } = useGuestSession();
   const hasCustomItem = items.some((item) => item.itemType === "CUSTOM");
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
@@ -24,7 +26,17 @@ export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps)
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [isApplying, setIsApplying] = useState(false);
   const [nameOnOrder, setNameOnOrder] = useState(guest.name);
+  const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
   const couponStorageKey = "bakersfield.cartCoupon";
+
+  const handleClearCart = () => {
+    setClearConfirmOpen(true);
+  };
+
+  const confirmClearCart = () => {
+    clearCart();
+    onToast({ type: "success", message: "Shopping bag cleared." });
+  };
 
   useEffect(() => {
     setNameOnOrder((current) => (current ? current : guest.name));
@@ -181,8 +193,15 @@ export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps)
       className={`page cart-page cart-page--bold ${hasCustomItem ? "cart-page--custom" : ""}`}
     >
       <div className="page-header cart-header">
-        <h2>Shopping Bag</h2>
-        {!hasCustomItem ? (
+        <div className="cart-header__title">
+          <h2>Shopping Bag</h2>
+          {items.length > 0 && (
+            <button className="cart-clear-btn" onClick={handleClearCart}>
+              Clear All
+            </button>
+          )}
+        </div>
+        {items.length > 0 && !hasCustomItem ? (
           <button className="primary" onClick={handleCheckout} type="button">
             Proceed to Payment
           </button>
@@ -359,6 +378,16 @@ export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps)
           </>
         )}
       </div>
+      <ConfirmationModal
+        open={clearConfirmOpen}
+        title="Empty Bag?"
+        message="Are you sure you want to remove all items from your shopping bag? This cannot be undone."
+        confirmLabel="Clear Bag"
+        cancelLabel="Keep Items"
+        onConfirm={confirmClearCart}
+        onClose={() => setClearConfirmOpen(false)}
+        isDestructive
+      />
     </section>
   );
 };
