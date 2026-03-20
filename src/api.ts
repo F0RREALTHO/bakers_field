@@ -369,12 +369,12 @@ export const api = {
       body: payload
     }),
   adminRequestOtp: (payload: AdminRequestOtpPayload) =>
-    request<AdminRequestOtpResponse>("/api/admin/login/request-otp", {
+    request<AdminRequestOtpResponse>("/api/admin/x7k2m9n5b3v1w4q6z2a4m8p0/login/request-otp", {
       method: "POST",
       body: payload
     }),
   adminLogin: (payload: AdminLoginRequest) =>
-    request<AdminLoginResponse>("/api/admin/login", {
+    request<AdminLoginResponse>("/api/admin/x7k2m9n5b3v1w4q6z2a4m8p0/login", {
       method: "POST",
       body: payload
     }),
