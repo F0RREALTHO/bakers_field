@@ -9,6 +9,17 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url))
     }
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom"],
+          animations: ["framer-motion"],
+          utilities: ["react-colorful", "qrcode.react"]
+        }
+      }
+    }
+  },
   test: {
     environment: "jsdom",
     setupFiles: "./src/test/setup.ts",
