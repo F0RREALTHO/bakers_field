@@ -108,16 +108,6 @@ export const Sidebar = ({
             </button>
           </nav>
           <div className="drawer-footer">
-            <Dialog.Close asChild>
-              <button
-                className="drawer-link drawer-link--plain"
-                onClick={() => onNavigate("staff")}
-                type="button"
-              >
-                <span className="drawer-footer__icon">{iconMap.lock}</span>
-                Owner Login
-              </button>
-            </Dialog.Close>
             <div className="drawer-footer__meta">
               <span>BakersField by Rashmi</span>
               <span>v2.4.0</span>

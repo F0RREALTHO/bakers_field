@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { api, type Combo, type Order, type Product } from "./api";
 import { AlertToast } from "./components/AlertToast";
 import { BottomNav } from "./components/BottomNav/BottomNav";
@@ -36,6 +36,8 @@ const StaffLoginPage = lazy(() =>
 const ReviewsPage = lazy(() =>
   import("./pages/ReviewsPage").then((module) => ({ default: module.ReviewsPage }))
 );
+
+const OWNER_LOGIN_PATH = "/owner-k9v3p8t7q4n6r1x5m0c2z8h1";
 
 import { useAdminSession } from "./hooks/useAdminSession";
 
@@ -89,6 +91,15 @@ export default function App() {
     setView(nextView);
     document.title = `BakersField | ${viewTitles[nextView]}`;
   };
+
+  useEffect(() => {
+    if (window.location.pathname === OWNER_LOGIN_PATH) {
+      setSelectedProduct(null);
+      setSelectedCombo(null);
+      setView("staff");
+      document.title = `BakersField | ${viewTitles.staff}`;
+    }
+  }, []);
 
   const handleSelectProduct = (product: Product) => {
     setSelectedCombo(null);

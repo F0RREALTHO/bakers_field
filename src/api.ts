@@ -397,12 +397,12 @@ export const api = {
     return uploadRequest<UploadImageResponse>("/api/uploads", formData);
   },
   adminRequestOtp: (payload: AdminRequestOtpPayload) =>
-    request<AdminRequestOtpResponse>("/api/admin/x7k2m9n5b3v1w4q6z2a4m8p0/login/request-otp", {
+    request<AdminRequestOtpResponse>("/api/admin/k9v3p8t7q4n6r1x5m0c2z8h1/login/request-otp", {
       method: "POST",
       body: payload
     }),
   adminLogin: (payload: AdminLoginRequest) =>
-    request<AdminLoginResponse>("/api/admin/x7k2m9n5b3v1w4q6z2a4m8p0/login", {
+    request<AdminLoginResponse>("/api/admin/k9v3p8t7q4n6r1x5m0c2z8h1/login", {
       method: "POST",
       body: payload
     }),
