@@ -136,9 +136,9 @@ export const CustomOrderModal = ({
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
 
-    const oversized = files.find((file) => file.size > 2 * 1024 * 1024);
+    const oversized = files.find((file) => file.size > 8 * 1024 * 1024);
     if (oversized) {
-      alert("Each image should be less than 2MB");
+      alert("Each image should be less than 8MB");
       return;
     }
 
@@ -161,8 +161,11 @@ export const CustomOrderModal = ({
         ...prev,
         imageUrls: [...prev.imageUrls, ...uploadedUrls]
       }));
-    } catch {
-      setUploadError("Unable to upload one or more images. Please try again.");
+    } catch (error) {
+      const message = error instanceof Error && error.message
+        ? error.message
+        : "Unable to upload one or more images. Please try again.";
+      setUploadError(message);
     } finally {
       setUploading(false);
       e.target.value = "";
