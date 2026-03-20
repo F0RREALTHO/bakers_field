@@ -330,7 +330,14 @@ const uploadRequest = async <T>(path: string, formData: FormData) => {
   });
 
   if (!response.ok) {
-    const message = await response.text();
+    const bodyText = await response.text();
+    let message = bodyText;
+    try {
+      const parsed = JSON.parse(bodyText) as { message?: string; error?: string };
+      message = parsed.message || parsed.error || bodyText;
+    } catch {
+      // Ignore parse errors and keep raw response text.
+    }
     throw new Error(message || "Upload failed");
   }
 
