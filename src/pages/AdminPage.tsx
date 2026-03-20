@@ -1113,6 +1113,32 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
     }
   };
 
+  const normalizeWhatsAppPhone = (value: string) => {
+    const digits = value.replace(/[^0-9]/g, "");
+    if (!digits) {
+      return "";
+    }
+    if (digits.length === 10) {
+      return `91${digits}`;
+    }
+    if (digits.length === 11 && digits.startsWith("0")) {
+      return `91${digits.slice(1)}`;
+    }
+    return digits;
+  };
+
+  const handleOpenWhatsAppChat = (order: AdminOrder) => {
+    const phone = normalizeWhatsAppPhone(order.phoneNumber ?? "");
+    if (!phone) {
+      onToast({ type: "error", message: "Customer phone number is missing." });
+      return;
+    }
+    const text = encodeURIComponent(
+      `Hi ${order.customerName}, this is BakersField regarding your order #${order.id}.`
+    );
+    window.open(`https://wa.me/${phone}?text=${text}`, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <section className="page admin-page admin-shell">
       <header className="admin-topbar admin-topbar--compact">
@@ -3408,7 +3434,11 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
             </section>
 
             <div className="admin-detail__actions">
-              <button className="primary" type="button">
+              <button
+                className="primary"
+                type="button"
+                onClick={() => handleOpenWhatsAppChat(selectedOrder)}
+              >
                 Chat on WhatsApp
               </button>
               <div className="admin-detail__row">
