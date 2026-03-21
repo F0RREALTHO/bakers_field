@@ -1636,22 +1636,18 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                                   : undefined
                               }}
                             />
-                            <button
-                              className="admin-media-card__remove"
-                              type="button"
-                              aria-label="Remove image"
-                              onClick={() =>
-                                setNewProduct((current) => ({ ...current, imageUrl: "" }))
-                              }
-                            >
-                              ×
-                            </button>
-                          </div>
-                          <div className="admin-media-card admin-media-card--with-action">
-                            <div className="admin-media-card__image" />
-                            <button className="admin-media-card__remove" type="button" aria-label="Remove image">
-                              ×
-                            </button>
+                            {newProduct.imageUrl ? (
+                              <button
+                                className="admin-media-card__remove"
+                                type="button"
+                                aria-label="Remove image"
+                                onClick={() =>
+                                  setNewProduct((current) => ({ ...current, imageUrl: "" }))
+                                }
+                              >
+                                ×
+                              </button>
+                            ) : null}
                           </div>
                           <button
                             className="admin-media-add"
@@ -1983,24 +1979,20 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                                     : undefined
                                 }}
                               />
-                              <button
-                                className="admin-media-card__remove"
-                                type="button"
-                                aria-label="Remove image"
-                                onClick={() =>
-                                  setProductEditor((current) =>
-                                    current ? { ...current, imageUrl: "" } : current
-                                  )
-                                }
-                              >
-                                ×
-                              </button>
-                            </div>
-                            <div className="admin-media-card admin-media-card--with-action">
-                              <div className="admin-media-card__image" />
-                              <button className="admin-media-card__remove" type="button" aria-label="Remove image">
-                                ×
-                              </button>
+                              {productEditor.imageUrl ? (
+                                <button
+                                  className="admin-media-card__remove"
+                                  type="button"
+                                  aria-label="Remove image"
+                                  onClick={() =>
+                                    setProductEditor((current) =>
+                                      current ? { ...current, imageUrl: "" } : current
+                                    )
+                                  }
+                                >
+                                  ×
+                                </button>
+                              ) : null}
                             </div>
                             <button
                               className="admin-media-add"

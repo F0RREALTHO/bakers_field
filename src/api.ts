@@ -303,7 +303,14 @@ export type AdminMetrics = {
   totalVisits: number;
 };
 
-const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8080";
+const configuredApiBase =
+  import.meta.env.VITE_API_BASE_URL ?? import.meta.env.VITE_API_BASE;
+
+const API_BASE = configuredApiBase
+  ? configuredApiBase.replace(/\/$/, "")
+  : typeof window !== "undefined"
+    ? window.location.origin
+    : "http://localhost:8080";
 
 type RequestOptions = {
   method?: string;
