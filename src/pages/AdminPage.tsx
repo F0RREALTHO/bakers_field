@@ -125,6 +125,8 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
   const [isUploadingNewProductImage, setIsUploadingNewProductImage] = useState(false);
   const [isUploadingEditProductImage, setIsUploadingEditProductImage] = useState(false);
   const [isUploadingComboImage, setIsUploadingComboImage] = useState(false);
+  const [newProductPreviewUrl, setNewProductPreviewUrl] = useState<string | null>(null);
+  const [editProductPreviewUrl, setEditProductPreviewUrl] = useState<string | null>(null);
   const newProductImageInputRef = useRef<HTMLInputElement | null>(null);
   const editProductImageInputRef = useRef<HTMLInputElement | null>(null);
   const comboImageInputRef = useRef<HTMLInputElement | null>(null);
@@ -207,6 +209,15 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
 
     load();
   }, [token, onToast]);
+
+  useEffect(() => {
+    if (productSubPage !== "addProduct") {
+      setBlobPreview(newProductPreviewUrl, setNewProductPreviewUrl, null);
+    }
+    if (productSubPage !== "editProduct") {
+      setBlobPreview(editProductPreviewUrl, setEditProductPreviewUrl, null);
+    }
+  }, [productSubPage]);
 
   const categoryOptions = useMemo(() => categories, [categories]);
   const productCount = products.length;
@@ -724,14 +735,27 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
         imageUrl: "",
         tagIds: []
       });
+      setBlobPreview(newProductPreviewUrl, setNewProductPreviewUrl, null);
       onToast({ type: "success", message: "Product created." });
     } catch {
       onToast({ type: "error", message: "Unable to create product." });
     }
   };
 
+  const setBlobPreview = (
+    previousUrl: string | null,
+    update: (value: string | null) => void,
+    nextUrl: string | null
+  ) => {
+    if (previousUrl?.startsWith("blob:")) {
+      URL.revokeObjectURL(previousUrl);
+    }
+    update(nextUrl);
+  };
+
   const handleUploadImage = async (
     file: File,
+    setPreviewUrl: (value: string | null) => void,
     setUploading: (value: boolean) => void,
     onUploaded: (imageUrl: string) => void
   ) => {
@@ -739,15 +763,17 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
       onToast({ type: "error", message: "Admin session expired. Please login again." });
       return;
     }
+    setPreviewUrl(URL.createObjectURL(file));
     setUploading(true);
     try {
       const uploaded = await api.adminUploadImage(token, file);
       onUploaded(uploaded.url);
+      setPreviewUrl(null);
       onToast({ type: "success", message: "Photo uploaded." });
     } catch (error) {
       const message = error instanceof Error && error.message
         ? error.message
-        : "Unable to upload photo.";
+        : "Upload failed. Local preview is shown.";
       onToast({ type: "error", message });
     } finally {
       setUploading(false);
@@ -1631,19 +1657,20 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                             <div
                               className="admin-media-card__image"
                               style={{
-                                backgroundImage: newProduct.imageUrl
-                                  ? `url(${newProduct.imageUrl})`
+                                backgroundImage: (newProductPreviewUrl ?? newProduct.imageUrl)
+                                  ? `url(${newProductPreviewUrl ?? newProduct.imageUrl})`
                                   : undefined
                               }}
                             />
-                            {newProduct.imageUrl ? (
+                            {newProduct.imageUrl || newProductPreviewUrl ? (
                               <button
                                 className="admin-media-card__remove"
                                 type="button"
                                 aria-label="Remove image"
-                                onClick={() =>
-                                  setNewProduct((current) => ({ ...current, imageUrl: "" }))
-                                }
+                                onClick={() => {
+                                  setBlobPreview(newProductPreviewUrl, setNewProductPreviewUrl, null);
+                                  setNewProduct((current) => ({ ...current, imageUrl: "" }));
+                                }}
                               >
                                 ×
                               </button>
@@ -1661,16 +1688,22 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                           <input
                             ref={newProductImageInputRef}
                             type="file"
-                            accept="image/*"
+                            accept="image/*,.heic,.heif,.avif,.bmp,.gif,.tif,.tiff"
                             hidden
                             onChange={(event) => {
                               const file = event.target.files?.[0];
                               if (!file) {
                                 return;
                               }
-                              void handleUploadImage(file, setIsUploadingNewProductImage, (imageUrl) => {
-                                setNewProduct((current) => ({ ...current, imageUrl }));
-                              });
+                              void handleUploadImage(
+                                file,
+                                (previewUrl) =>
+                                  setBlobPreview(newProductPreviewUrl, setNewProductPreviewUrl, previewUrl),
+                                setIsUploadingNewProductImage,
+                                (imageUrl) => {
+                                  setNewProduct((current) => ({ ...current, imageUrl }));
+                                }
+                              );
                               event.target.value = "";
                             }}
                           />
@@ -2006,18 +2039,24 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                             <input
                               ref={editProductImageInputRef}
                               type="file"
-                              accept="image/*"
+                              accept="image/*,.heic,.heif,.avif,.bmp,.gif,.tif,.tiff"
                               hidden
                               onChange={(event) => {
                                 const file = event.target.files?.[0];
                                 if (!file) {
                                   return;
                                 }
-                                void handleUploadImage(file, setIsUploadingEditProductImage, (imageUrl) => {
-                                  setProductEditor((current) =>
-                                    current ? { ...current, imageUrl } : current
-                                  );
-                                });
+                                void handleUploadImage(
+                                  file,
+                                  (previewUrl) =>
+                                    setBlobPreview(editProductPreviewUrl, setEditProductPreviewUrl, previewUrl),
+                                  setIsUploadingEditProductImage,
+                                  (imageUrl) => {
+                                    setProductEditor((current) =>
+                                      current ? { ...current, imageUrl } : current
+                                    );
+                                  }
+                                );
                                 event.target.value = "";
                               }}
                             />
@@ -2497,16 +2536,23 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                     <input
                       ref={comboImageInputRef}
                       type="file"
-                      accept="image/*"
+                      accept="image/*,.heic,.heif,.avif,.bmp,.gif,.tif,.tiff"
                       hidden
                       onChange={(event) => {
                         const file = event.target.files?.[0];
                         if (!file) {
                           return;
                         }
-                        void handleUploadImage(file, setIsUploadingComboImage, (imageUrl) => {
-                          setComboForm((current) => ({ ...current, imageUrl }));
-                        });
+                        void handleUploadImage(
+                          file,
+                          () => {
+                            // Combo preview is handled by image URL after upload.
+                          },
+                          setIsUploadingComboImage,
+                          (imageUrl) => {
+                            setComboForm((current) => ({ ...current, imageUrl }));
+                          }
+                        );
                         event.target.value = "";
                       }}
                     />
