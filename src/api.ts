@@ -353,11 +353,23 @@ const uploadRequest = async <T>(path: string, formData: FormData, token?: string
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
-  const response = await fetch(`${API_BASE}${path}`, {
-    method: "POST",
-    headers,
-    body: formData
-  });
+  const doUpload = () =>
+    fetch(`${API_BASE}${path}`, {
+      method: "POST",
+      headers,
+      body: formData
+    });
+
+  let response: Response;
+  try {
+    response = await doUpload();
+  } catch (error) {
+    if (error instanceof TypeError) {
+      response = await doUpload();
+    } else {
+      throw error;
+    }
+  }
 
   if (!response.ok) {
     const bodyText = await response.text();
