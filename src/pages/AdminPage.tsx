@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ColorWheel } from "../components/ColorWheel";
 import {
   api,
@@ -113,6 +113,12 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
     endsAt: "",
     active: false
   });
+  const [isUploadingNewProductImage, setIsUploadingNewProductImage] = useState(false);
+  const [isUploadingEditProductImage, setIsUploadingEditProductImage] = useState(false);
+  const [isUploadingComboImage, setIsUploadingComboImage] = useState(false);
+  const newProductImageInputRef = useRef<HTMLInputElement | null>(null);
+  const editProductImageInputRef = useRef<HTMLInputElement | null>(null);
+  const comboImageInputRef = useRef<HTMLInputElement | null>(null);
 
   const [productDrafts, setProductDrafts] = useState<Record<number, AdminProduct>>({});
   const [categoryDrafts, setCategoryDrafts] = useState<Record<number, string>>({});
@@ -709,6 +715,27 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
       onToast({ type: "success", message: "Product created." });
     } catch {
       onToast({ type: "error", message: "Unable to create product." });
+    }
+  };
+
+  const handleUploadImage = async (
+    file: File,
+    setUploading: (value: boolean) => void,
+    onUploaded: (imageUrl: string) => void
+  ) => {
+    if (!token) {
+      onToast({ type: "error", message: "Admin session expired. Please login again." });
+      return;
+    }
+    setUploading(true);
+    try {
+      const uploaded = await api.uploadImage(file);
+      onUploaded(uploaded.url);
+      onToast({ type: "success", message: "Photo uploaded." });
+    } catch {
+      onToast({ type: "error", message: "Unable to upload photo." });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -1594,7 +1621,14 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                                   : undefined
                               }}
                             />
-                            <button className="admin-media-card__remove" type="button" aria-label="Remove image">
+                            <button
+                              className="admin-media-card__remove"
+                              type="button"
+                              aria-label="Remove image"
+                              onClick={() =>
+                                setNewProduct((current) => ({ ...current, imageUrl: "" }))
+                              }
+                            >
                               ×
                             </button>
                           </div>
@@ -1604,10 +1638,31 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                               ×
                             </button>
                           </div>
-                          <button className="admin-media-add" type="button">
+                          <button
+                            className="admin-media-add"
+                            type="button"
+                            onClick={() => newProductImageInputRef.current?.click()}
+                            disabled={isUploadingNewProductImage}
+                          >
                             <span className="admin-media-add__icon">＋</span>
-                            <span>Add Photo</span>
+                            <span>{isUploadingNewProductImage ? "Uploading..." : "Add Photo"}</span>
                           </button>
+                          <input
+                            ref={newProductImageInputRef}
+                            type="file"
+                            accept="image/*"
+                            hidden
+                            onChange={(event) => {
+                              const file = event.target.files?.[0];
+                              if (!file) {
+                                return;
+                              }
+                              void handleUploadImage(file, setIsUploadingNewProductImage, (imageUrl) => {
+                                setNewProduct((current) => ({ ...current, imageUrl }));
+                              });
+                              event.target.value = "";
+                            }}
+                          />
                         </div>
                       </section>
 
@@ -1913,7 +1968,16 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                                     : undefined
                                 }}
                               />
-                              <button className="admin-media-card__remove" type="button" aria-label="Remove image">
+                              <button
+                                className="admin-media-card__remove"
+                                type="button"
+                                aria-label="Remove image"
+                                onClick={() =>
+                                  setProductEditor((current) =>
+                                    current ? { ...current, imageUrl: "" } : current
+                                  )
+                                }
+                              >
                                 ×
                               </button>
                             </div>
@@ -1923,10 +1987,33 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                                 ×
                               </button>
                             </div>
-                            <button className="admin-media-add" type="button">
+                            <button
+                              className="admin-media-add"
+                              type="button"
+                              onClick={() => editProductImageInputRef.current?.click()}
+                              disabled={isUploadingEditProductImage}
+                            >
                               <span className="admin-media-add__icon">＋</span>
-                              <span>Add Photo</span>
+                              <span>{isUploadingEditProductImage ? "Uploading..." : "Add Photo"}</span>
                             </button>
+                            <input
+                              ref={editProductImageInputRef}
+                              type="file"
+                              accept="image/*"
+                              hidden
+                              onChange={(event) => {
+                                const file = event.target.files?.[0];
+                                if (!file) {
+                                  return;
+                                }
+                                void handleUploadImage(file, setIsUploadingEditProductImage, (imageUrl) => {
+                                  setProductEditor((current) =>
+                                    current ? { ...current, imageUrl } : current
+                                  );
+                                });
+                                event.target.value = "";
+                              }}
+                            />
                           </div>
                         </section>
 
@@ -2380,6 +2467,41 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                       onChange={(event) =>
                         setComboForm((current) => ({ ...current, imageUrl: event.target.value }))
                       }
+                    />
+                    <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
+                      <button
+                        className="ghost"
+                        type="button"
+                        onClick={() => comboImageInputRef.current?.click()}
+                        disabled={isUploadingComboImage}
+                      >
+                        {isUploadingComboImage ? "Uploading..." : "Add Photo"}
+                      </button>
+                      {comboForm.imageUrl ? (
+                        <button
+                          className="ghost"
+                          type="button"
+                          onClick={() => setComboForm((current) => ({ ...current, imageUrl: "" }))}
+                        >
+                          Remove
+                        </button>
+                      ) : null}
+                    </div>
+                    <input
+                      ref={comboImageInputRef}
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (!file) {
+                          return;
+                        }
+                        void handleUploadImage(file, setIsUploadingComboImage, (imageUrl) => {
+                          setComboForm((current) => ({ ...current, imageUrl }));
+                        });
+                        event.target.value = "";
+                      }}
                     />
                   </label>
                 </div>
