@@ -294,6 +294,15 @@ export type AdminPaymentStatusRequest = {
   paymentReference?: string;
 };
 
+export type AdminMetrics = {
+  totalOrders: number;
+  totalCustomOrders: number;
+  totalRevenueInr: number;
+  uniqueOrderingCustomers: number;
+  uniqueVisitors: number;
+  totalVisits: number;
+};
+
 const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8080";
 
 type RequestOptions = {
@@ -323,9 +332,14 @@ const request = async <T>(path: string, options: RequestOptions = {}) => {
   return JSON.parse(bodyText) as T;
 };
 
-const uploadRequest = async <T>(path: string, formData: FormData) => {
+const uploadRequest = async <T>(path: string, formData: FormData, token?: string) => {
+  const headers: HeadersInit = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
   const response = await fetch(`${API_BASE}${path}`, {
     method: "POST",
+    headers,
     body: formData
   });
 
@@ -398,10 +412,20 @@ export const api = {
       method: "POST",
       body: payload
     }),
+  trackVisit: (visitorId: string) =>
+    request<{ visitCount: number }>("/api/analytics/visit", {
+      method: "POST",
+      body: { visitorId }
+    }),
   uploadImage: (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
     return uploadRequest<UploadImageResponse>("/api/uploads", formData);
+  },
+  adminUploadImage: (token: string, file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return uploadRequest<UploadImageResponse>("/api/admin/uploads", formData, token);
   },
   adminRequestOtp: (payload: AdminRequestOtpPayload) =>
     request<AdminRequestOtpResponse>("/api/admin/k9v3p8t7q4n6r1x5m0c2z8h1/login/request-otp", {
@@ -462,6 +486,7 @@ export const api = {
   adminUpdateSale: (token: string, payload: SaleConfig) =>
     adminRequest<SaleConfig>("/api/admin/sales/current", token, { method: "PUT", body: payload }),
   adminGetOrders: (token: string) => adminRequest<AdminOrder[]>("/api/admin/orders", token),
+  adminGetMetrics: (token: string) => adminRequest<AdminMetrics>("/api/admin/metrics", token),
   adminUpdateOrderStatus: (token: string, id: number, payload: AdminStatusRequest) =>
     adminRequest<AdminOrder>(`/api/admin/orders/${id}`, token, {
       method: "PATCH",

@@ -6,6 +6,7 @@ import {
   type AdminCustomOrder,
   type AdminCombo,
   type AdminCoupon,
+  type AdminMetrics,
   type AdminOrder,
   type AdminProduct,
   type Tag
@@ -35,6 +36,14 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
   const [coupons, setCoupons] = useState<AdminCoupon[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [combos, setCombos] = useState<AdminCombo[]>([]);
+  const [adminMetrics, setAdminMetrics] = useState<AdminMetrics>({
+    totalOrders: 0,
+    totalCustomOrders: 0,
+    totalRevenueInr: 0,
+    uniqueOrderingCustomers: 0,
+    uniqueVisitors: 0,
+    totalVisits: 0
+  });
   const [loading, setLoading] = useState(true);
   const [orderFilter, setOrderFilter] = useState("all");
   const [orderSearch, setOrderSearch] = useState("");
@@ -141,7 +150,8 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
           customOrdersData,
           tagsData,
           combosData,
-          saleData
+          saleData,
+          metricsData
         ] = await Promise.all([
           api.adminGetProducts(token),
           api.adminGetCategories(token),
@@ -149,7 +159,8 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
           api.adminGetCustomOrders(token),
           api.adminGetTags(token),
           api.adminGetCombos(token),
-          api.adminGetSale(token)
+          api.adminGetSale(token),
+          api.adminGetMetrics(token)
         ]);
         const couponsData = await api.adminGetCoupons(token);
         setProducts(productsData);
@@ -159,6 +170,7 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
         setCoupons(couponsData);
         setTags(tagsData);
         setCombos(combosData);
+        setAdminMetrics(metricsData);
         if (saleData) {
           setSaleForm({
             name: saleData.name,
@@ -729,7 +741,7 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
     }
     setUploading(true);
     try {
-      const uploaded = await api.uploadImage(file);
+      const uploaded = await api.adminUploadImage(token, file);
       onUploaded(uploaded.url);
       onToast({ type: "success", message: "Photo uploaded." });
     } catch {
@@ -2848,6 +2860,10 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                 <p>Avg Ticket</p>
                 <h4>₹{averageOrder}</h4>
               </div>
+              <div className="admin-metric-card">
+                <p>Total Orders (All Time)</p>
+                <h4>{adminMetrics.totalOrders}</h4>
+              </div>
             </div>
           </section>
 
@@ -2865,6 +2881,20 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
               <div className="admin-metric-card">
                 <p>Custom Requests</p>
                 <h4>{customOrders.length}</h4>
+              </div>
+            </div>
+            <div className="admin-summary-grid" style={{ marginTop: 12 }}>
+              <div className="admin-metric-card">
+                <p>Users With Orders</p>
+                <h4>{adminMetrics.uniqueOrderingCustomers}</h4>
+              </div>
+              <div className="admin-metric-card">
+                <p>Unique Visitors</p>
+                <h4>{adminMetrics.uniqueVisitors}</h4>
+              </div>
+              <div className="admin-metric-card">
+                <p>Total Visits</p>
+                <h4>{adminMetrics.totalVisits}</h4>
               </div>
             </div>
             <div className="admin-chart">

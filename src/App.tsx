@@ -36,6 +36,7 @@ const ReviewsPage = lazy(() =>
 );
 
 const OWNER_LOGIN_PATH = "/owner-k9v3p8t7q4n6r1x5m0c2z8h1";
+const VISITOR_ID_KEY = "bf_visitor_id";
 
 import { useAdminSession } from "./hooks/useAdminSession";
 
@@ -97,6 +98,17 @@ export default function App() {
       setView("staff");
       document.title = `BakersField | ${viewTitles.staff}`;
     }
+  }, []);
+
+  useEffect(() => {
+    const existing = window.localStorage.getItem(VISITOR_ID_KEY);
+    const visitorId = existing || `v-${crypto.randomUUID()}`;
+    if (!existing) {
+      window.localStorage.setItem(VISITOR_ID_KEY, visitorId);
+    }
+    void api.trackVisit(visitorId).catch(() => {
+      // Visit analytics are best-effort and should never block app usage.
+    });
   }, []);
 
   const handleSelectProduct = (product: Product) => {
