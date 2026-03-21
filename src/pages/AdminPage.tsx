@@ -744,8 +744,11 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
       const uploaded = await api.adminUploadImage(token, file);
       onUploaded(uploaded.url);
       onToast({ type: "success", message: "Photo uploaded." });
-    } catch {
-      onToast({ type: "error", message: "Unable to upload photo." });
+    } catch (error) {
+      const message = error instanceof Error && error.message
+        ? error.message
+        : "Unable to upload photo.";
+      onToast({ type: "error", message });
     } finally {
       setUploading(false);
     }
