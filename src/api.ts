@@ -306,11 +306,20 @@ export type AdminMetrics = {
 const configuredApiBase =
   import.meta.env.VITE_API_BASE_URL ?? import.meta.env.VITE_API_BASE;
 
-const API_BASE = configuredApiBase
-  ? configuredApiBase.replace(/\/$/, "")
-  : typeof window !== "undefined"
-    ? window.location.origin
-    : "http://localhost:8080";
+const inferApiBaseFromWindow = () => {
+  if (typeof window === "undefined") {
+    return "http://localhost:8080";
+  }
+
+  const host = window.location.hostname;
+  if (host === "fieldbakers.me" || host === "www.fieldbakers.me" || host.endsWith(".fieldbakers.me")) {
+    return "https://api.fieldbakers.me";
+  }
+
+  return window.location.origin;
+};
+
+const API_BASE = (configuredApiBase || inferApiBaseFromWindow()).replace(/\/$/, "");
 
 type RequestOptions = {
   method?: string;
