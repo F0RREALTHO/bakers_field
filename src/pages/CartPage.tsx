@@ -125,14 +125,17 @@ export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps)
     const customItem = items.find(i => i.itemType === "CUSTOM");
     if (!customItem) return;
 
+    const occasion = customItem.name.replace(/^Custom Order:\s*/i, "");
+
     const message = [
       "Hi BakersField, I want to confirm my custom cake request.",
-      `Request ID: #${customItem.itemId}`,
-      `Name: ${nameOnOrder.trim() || guest.name || "Guest"}`,
-      `Phone: ${guest.phone || "Not provided"}`,
-      customItem.priceInr > 0 ? `Budget: ₹${customItem.priceInr}` : null,
-      customItem.details ? `Details: ${customItem.details}` : null,
-      customItem.imageUrl && !customItem.imageUrl.includes("custom-cake-step3") ? `Reference Image: ${customItem.imageUrl}` : null
+      `*Request ID:* #${customItem.itemId}`,
+      `*Name:* ${nameOnOrder.trim() || guest.name || "Guest"}`,
+      `*Phone:* ${guest.phone || "Not provided"}`,
+      `*Occasion:* ${occasion}`,
+      customItem.priceInr > 0 ? `*Budget:* ₹${customItem.priceInr}` : null,
+      customItem.details ? `*Details:* ${customItem.details}` : null,
+      customItem.imageUrl && !customItem.imageUrl.includes("custom-cake-step3") ? `*Reference Image:* ${customItem.imageUrl}` : null
     ]
       .filter(Boolean)
       .join("\n");
@@ -169,13 +172,16 @@ export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps)
   const handleOpenCustomWhatsApp = () => {
     const customItem = items.find(i => i.itemType === "CUSTOM");
     if (!customItem) return;
+    const occasion = customItem.name.replace(/^Custom Order:\s*/i, "");
+
     const message = [
       "Hi BakersField, I need help with my custom cake request.",
-      `Request ID: #${customItem.itemId}`,
-      `Name: ${nameOnOrder.trim() || guest.name || "Guest"}`,
-      `Phone: ${guest.phone || "Not provided"}`,
-      customItem.priceInr > 0 ? `Budget: ₹${customItem.priceInr}` : null,
-      customItem.imageUrl && !customItem.imageUrl.includes("custom-cake-step3") ? `Reference Image: ${customItem.imageUrl}` : null
+      `*Request ID:* #${customItem.itemId}`,
+      `*Name:* ${nameOnOrder.trim() || guest.name || "Guest"}`,
+      `*Phone:* ${guest.phone || "Not provided"}`,
+      `*Occasion:* ${occasion}`,
+      customItem.priceInr > 0 ? `*Budget:* ₹${customItem.priceInr}` : null,
+      customItem.imageUrl && !customItem.imageUrl.includes("custom-cake-step3") ? `*Reference Image:* ${customItem.imageUrl}` : null
     ]
       .filter(Boolean)
       .join("\n");
