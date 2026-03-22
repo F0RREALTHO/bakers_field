@@ -131,7 +131,8 @@ export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps)
       `Name: ${nameOnOrder.trim() || guest.name || "Guest"}`,
       `Phone: ${guest.phone || "Not provided"}`,
       customItem.priceInr > 0 ? `Budget: ₹${customItem.priceInr}` : null,
-      customItem.details ? `Details: ${customItem.details}` : null
+      customItem.details ? `Details: ${customItem.details}` : null,
+      customItem.imageUrl && !customItem.imageUrl.includes("custom-cake-step3") ? `Reference Image: ${customItem.imageUrl}` : null
     ]
       .filter(Boolean)
       .join("\n");
@@ -173,7 +174,8 @@ export const CartPage = ({ onCheckout, onOrderSuccess, onToast }: CartPageProps)
       `Request ID: #${customItem.itemId}`,
       `Name: ${nameOnOrder.trim() || guest.name || "Guest"}`,
       `Phone: ${guest.phone || "Not provided"}`,
-      customItem.priceInr > 0 ? `Budget: ₹${customItem.priceInr}` : null
+      customItem.priceInr > 0 ? `Budget: ₹${customItem.priceInr}` : null,
+      customItem.imageUrl && !customItem.imageUrl.includes("custom-cake-step3") ? `Reference Image: ${customItem.imageUrl}` : null
     ]
       .filter(Boolean)
       .join("\n");
