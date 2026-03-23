@@ -65,6 +65,7 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
   const [newIngredientDraft, setNewIngredientDraft] = useState("");
   const [newProductCalories, setNewProductCalories] = useState("");
   const [newProductProtein, setNewProductProtein] = useState("");
+  const [editProductOriginalPrice, setEditProductOriginalPrice] = useState("");
   const [editProductWeight, setEditProductWeight] = useState("");
   const [editProductActive, setEditProductActive] = useState(true);
   const [editProductIngredients, setEditProductIngredients] = useState<string[]>([]);
@@ -89,6 +90,7 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
   const [newProduct, setNewProduct] = useState({
     name: "",
     priceInr: "",
+    originalPriceInr: "",
     categoryId: "",
     description: "",
     imageUrl: "",
@@ -722,6 +724,7 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
       const created = await api.adminCreateProduct(token, {
         name: newProduct.name.trim(),
         priceInr: Number(newProduct.priceInr),
+        originalPriceInr: newProduct.originalPriceInr ? Number(newProduct.originalPriceInr) : undefined,
         categoryId: Number(newProduct.categoryId),
         description: newProduct.description.trim() || undefined,
         imageUrl: newProduct.imageUrl.trim() || undefined,
@@ -737,6 +740,7 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
       setNewProduct({
         name: "",
         priceInr: "",
+        originalPriceInr: "",
         categoryId: "",
         description: "",
         imageUrl: "",
@@ -1075,6 +1079,7 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
         priceInr: draft.priceInr,
         categoryId: draft.categoryId,
         description: draft.description,
+        originalPriceInr: draft.originalPriceInr,
         imageUrl: draft.imageUrl,
         tagIds: (draft.tags ?? []).map((tag) => tag.id),
         ingredients: draft.ingredients,
@@ -1751,7 +1756,17 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                           </label>
                           <div className="admin-modal-field-row">
                             <label>
-                              Price (INR)
+                              Base Price (INR)
+                              <input
+                                value={newProduct.originalPriceInr || ""}
+                                onChange={(event) =>
+                                  setNewProduct((current) => ({ ...current, originalPriceInr: event.target.value }))
+                                }
+                                type="number"
+                              />
+                            </label>
+                            <label>
+                              Discounted Price (INR)
                               <input
                                 value={newProduct.priceInr}
                                 onChange={(event) =>
@@ -1760,6 +1775,8 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                                 type="number"
                               />
                             </label>
+                          </div>
+                          <div className="admin-modal-field-row">
                             <label>
                               Weight (Kg)
                               <input
@@ -2124,7 +2141,21 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                             </label>
                             <div className="admin-modal-field-row">
                               <label>
-                                Price (INR)
+                                Base Price (INR)
+                                <input
+                                  type="number"
+                                  value={productEditor.originalPriceInr || ""}
+                                  onChange={(event) =>
+                                    setProductEditor((current) =>
+                                      current
+                                        ? { ...current, originalPriceInr: Number(event.target.value) || undefined }
+                                        : current
+                                    )
+                                  }
+                                />
+                              </label>
+                              <label>
+                                Discounted Price (INR)
                                 <input
                                   type="number"
                                   value={productEditor.priceInr}
@@ -2137,6 +2168,8 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                                   }
                                 />
                               </label>
+                            </div>
+                            <div className="admin-modal-field-row">
                               <label>
                                 Weight (Kg)
                                 <input

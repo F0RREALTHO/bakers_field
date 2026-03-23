@@ -7,6 +7,7 @@ export type Product = {
   id: number;
   name: string;
   priceInr: number;
+  originalPriceInr?: number;
   categoryId: number;
   categoryName: string;
   description?: string;
@@ -251,6 +252,7 @@ export type AdminProduct = {
   id: number;
   name: string;
   priceInr: number;
+  originalPriceInr?: number;
   description?: string;
   imageUrl?: string;
   tags?: Tag[];
@@ -286,6 +288,7 @@ export type AdminCategoryRequest = {
 export type AdminProductRequest = {
   name: string;
   priceInr: number;
+  originalPriceInr?: number;
   description?: string;
   imageUrl?: string;
   tagIds?: number[];

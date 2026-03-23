@@ -339,11 +339,12 @@ export const MenuPage = ({
                 <div className="product-card__footer">
                   {(() => {
                     const salePrice = getSalePrice(product.priceInr);
+                    const originalPrice = product.originalPriceInr ?? (salePrice != null ? product.priceInr : null);
                     return (
                       <>
                         <span className="price">₹{salePrice ?? product.priceInr}</span>
-                        {salePrice != null ? (
-                          <span className="price price--strike">₹{product.priceInr}</span>
+                        {originalPrice != null ? (
+                          <span className="price price--strike">₹{originalPrice}</span>
                         ) : null}
                       </>
                     );
