@@ -1771,14 +1771,20 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                             </label>
                           </div>
                           <div className="admin-modal-field-row">
-                            <label style={{ flexDirection: "row", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
-                              <input
-                                type="checkbox"
-                                checked={newProductActive}
-                                onChange={(event) => setNewProductActive(event.target.checked)}
-                                style={{ width: "auto" }}
-                              />
-                              Active / Visible in Menu
+                            <label className={`admin-tag-toggle-row ${newProductActive ? "is-active" : ""}`} style={{ cursor: "pointer", marginTop: "0.5rem" }}>
+                              <div className="admin-tag-switch">
+                                <input
+                                  type="checkbox"
+                                  checked={newProductActive}
+                                  onChange={(event) => setNewProductActive(event.target.checked)}
+                                />
+                                <div className="admin-tag-switch__track">
+                                  <div className="admin-tag-switch__thumb" />
+                                </div>
+                              </div>
+                              <span style={{ fontSize: "0.8rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--accent-dark)", fontWeight: 700 }}>
+                                Active in Menu
+                              </span>
                             </label>
                           </div>
                           <label>
@@ -2142,14 +2148,20 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                               </label>
                             </div>
                             <div className="admin-modal-field-row">
-                              <label style={{ flexDirection: "row", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
-                                <input
-                                  type="checkbox"
-                                  checked={editProductActive}
-                                  onChange={(event) => setEditProductActive(event.target.checked)}
-                                  style={{ width: "auto" }}
-                                />
-                                Active / Visible in Menu
+                              <label className={`admin-tag-toggle-row ${editProductActive ? "is-active" : ""}`} style={{ cursor: "pointer", marginTop: "0.5rem" }}>
+                                <div className="admin-tag-switch">
+                                  <input
+                                    type="checkbox"
+                                    checked={editProductActive}
+                                    onChange={(event) => setEditProductActive(event.target.checked)}
+                                  />
+                                  <div className="admin-tag-switch__track">
+                                    <div className="admin-tag-switch__thumb" />
+                                  </div>
+                                </div>
+                                <span style={{ fontSize: "0.8rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--accent-dark)", fontWeight: 700 }}>
+                                  Active in Menu
+                                </span>
                               </label>
                             </div>
                             <label>
