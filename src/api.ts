@@ -13,6 +13,9 @@ export type Product = {
   imageUrl?: string;
   tags?: Tag[];
   featured?: boolean;
+  ingredients?: string[];
+  calories?: string;
+  protein?: string;
 };
 
 export type Tag = {
@@ -252,6 +255,9 @@ export type AdminProduct = {
   categoryId: number;
   categoryName: string;
   featured?: boolean;
+  ingredients?: string[];
+  calories?: string;
+  protein?: string;
 };
 
 export type AdminOrder = Order;
@@ -281,6 +287,9 @@ export type AdminProductRequest = {
   tagIds?: number[];
   categoryId: number;
   featured?: boolean;
+  ingredients?: string[];
+  calories?: string;
+  protein?: string;
 };
 
 export type AdminStatusRequest = {

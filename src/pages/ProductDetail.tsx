@@ -161,10 +161,18 @@ const ProductDetail = ({
       <div className="detail-section">
         <h3>Ingredients</h3>
         <div className="detail-chips">
-          <span className="detail-chip">Organic Wheat Flour</span>
-          <span className="detail-chip">Wild Yeast Starter</span>
-          <span className="detail-chip">Sea Salt</span>
-          <span className="detail-chip">Purified Water</span>
+          {(product.ingredients && product.ingredients.length > 0) ? (
+            product.ingredients.map(ingredient => (
+              <span key={ingredient} className="detail-chip">{ingredient}</span>
+            ))
+          ) : (
+            <>
+              <span className="detail-chip">Organic Wheat Flour</span>
+              <span className="detail-chip">Wild Yeast Starter</span>
+              <span className="detail-chip">Sea Salt</span>
+              <span className="detail-chip">Purified Water</span>
+            </>
+          )}
         </div>
       </div>
 
@@ -180,7 +188,7 @@ const ProductDetail = ({
         </button>
         {nutritionOpen ? (
           <p className="detail-nutrition__content">
-            Calories: 250kcal | Protein: 8g | Carbs: 52g | Fats: 1.5g
+            Calories: {product.calories || "250kcal"} | Protein: {product.protein || "8g"}
           </p>
         ) : null}
       </div>

@@ -723,7 +723,10 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
         categoryId: Number(newProduct.categoryId),
         description: newProduct.description.trim() || undefined,
         imageUrl: newProduct.imageUrl.trim() || undefined,
-        tagIds: newProduct.tagIds
+        tagIds: newProduct.tagIds,
+        ingredients: newProductIngredients.length > 0 ? newProductIngredients : undefined,
+        calories: newProductCalories.trim() || undefined,
+        protein: newProductProtein.trim() || undefined
       });
       setProducts((current) => [...current, created]);
       setProductDrafts((current) => ({ ...current, [created.id]: created }));
@@ -735,6 +738,9 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
         imageUrl: "",
         tagIds: []
       });
+      setNewProductIngredients([]);
+      setNewProductCalories("");
+      setNewProductProtein("");
       setBlobPreview(newProductPreviewUrl, setNewProductPreviewUrl, null);
       onToast({ type: "success", message: "Product created." });
     } catch {
@@ -1064,7 +1070,10 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
         categoryId: draft.categoryId,
         description: draft.description,
         imageUrl: draft.imageUrl,
-        tagIds: (draft.tags ?? []).map((tag) => tag.id)
+        tagIds: (draft.tags ?? []).map((tag) => tag.id),
+        ingredients: draft.ingredients,
+        calories: draft.calories,
+        protein: draft.protein
       });
       setProducts((current) => current.map((product) => (product.id === productId ? updated : product)));
       setProductDrafts((current) => ({ ...current, [productId]: updated }));
@@ -1091,10 +1100,10 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
     }
     setProductEditor({ ...selected });
     setEditProductStock("");
-    setEditProductIngredients(["Belgian Chocolate", "Organic Flour", "Sea Salt"]);
+    setEditProductIngredients(selected.ingredients ?? []);
     setEditIngredientDraft("");
-    setEditProductCalories("320 kcal");
-    setEditProductProtein("4g");
+    setEditProductCalories(selected.calories ?? "");
+    setEditProductProtein(selected.protein ?? "");
     setProductSubPage("editProduct");
   };
 
@@ -1132,7 +1141,10 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
         categoryId: productEditor.categoryId,
         description: productEditor.description,
         imageUrl: productEditor.imageUrl,
-        tagIds: (productEditor.tags ?? []).map((tag) => tag.id)
+        tagIds: (productEditor.tags ?? []).map((tag) => tag.id),
+        ingredients: editProductIngredients.length > 0 ? editProductIngredients : undefined,
+        calories: editProductCalories.trim() || undefined,
+        protein: editProductProtein.trim() || undefined
       });
       setProducts((current) => current.map((product) => (product.id === updated.id ? updated : product)));
       setProductDrafts((current) => ({ ...current, [updated.id]: updated }));
