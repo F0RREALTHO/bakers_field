@@ -313,7 +313,9 @@ export const MenuPage = ({
               />
               <div>
                 <h4>{product.name}</h4>
-                <p className="muted">{product.categoryName}</p>
+                <p className="muted">
+                  {product.categoryName} {product.weightKg ? `· ${product.weightKg} kg` : ""}
+                </p>
                 {product.tags && product.tags.length > 0 ? (
                   <div className="tag-row">
                     {product.tags.slice(0, 3).map((tag) => (

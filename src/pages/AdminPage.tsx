@@ -59,12 +59,14 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   const [productSubPage, setProductSubPage] = useState<"none" | "addProduct" | "editProduct" | "editCategory">("none");
   const [categoryEditor, setCategoryEditor] = useState<AdminCategory | null>(null);
-  const [newProductStock, setNewProductStock] = useState("");
+  const [newProductWeight, setNewProductWeight] = useState("");
+  const [newProductActive, setNewProductActive] = useState(true);
   const [newProductIngredients, setNewProductIngredients] = useState<string[]>([]);
   const [newIngredientDraft, setNewIngredientDraft] = useState("");
   const [newProductCalories, setNewProductCalories] = useState("");
   const [newProductProtein, setNewProductProtein] = useState("");
-  const [editProductStock, setEditProductStock] = useState("");
+  const [editProductWeight, setEditProductWeight] = useState("");
+  const [editProductActive, setEditProductActive] = useState(true);
   const [editProductIngredients, setEditProductIngredients] = useState<string[]>([]);
   const [editIngredientDraft, setEditIngredientDraft] = useState("");
   const [editProductCalories, setEditProductCalories] = useState("");
@@ -726,7 +728,9 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
         tagIds: newProduct.tagIds,
         ingredients: newProductIngredients.length > 0 ? newProductIngredients : undefined,
         calories: newProductCalories.trim() || undefined,
-        protein: newProductProtein.trim() || undefined
+        protein: newProductProtein.trim() || undefined,
+        weightKg: newProductWeight ? Number(newProductWeight) : undefined,
+        active: newProductActive
       });
       setProducts((current) => [...current, created]);
       setProductDrafts((current) => ({ ...current, [created.id]: created }));
@@ -741,6 +745,8 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
       setNewProductIngredients([]);
       setNewProductCalories("");
       setNewProductProtein("");
+      setNewProductWeight("");
+      setNewProductActive(true);
       setBlobPreview(newProductPreviewUrl, setNewProductPreviewUrl, null);
       onToast({ type: "success", message: "Product created." });
     } catch {
@@ -1073,7 +1079,9 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
         tagIds: (draft.tags ?? []).map((tag) => tag.id),
         ingredients: draft.ingredients,
         calories: draft.calories,
-        protein: draft.protein
+        protein: draft.protein,
+        weightKg: draft.weightKg,
+        active: draft.active
       });
       setProducts((current) => current.map((product) => (product.id === productId ? updated : product)));
       setProductDrafts((current) => ({ ...current, [productId]: updated }));
@@ -1084,6 +1092,9 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
   };
 
   const handleDeleteProduct = async (productId: number) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) {
+      return;
+    }
     try {
       await api.adminDeleteProduct(token, productId);
       setProducts((current) => current.filter((product) => product.id !== productId));
@@ -1099,7 +1110,8 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
       return;
     }
     setProductEditor({ ...selected });
-    setEditProductStock("");
+    setEditProductWeight(selected.weightKg ? String(selected.weightKg) : "");
+    setEditProductActive(selected.active ?? true);
     setEditProductIngredients(selected.ingredients ?? []);
     setEditIngredientDraft("");
     setEditProductCalories(selected.calories ?? "");
@@ -1144,7 +1156,9 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
         tagIds: (productEditor.tags ?? []).map((tag) => tag.id),
         ingredients: editProductIngredients.length > 0 ? editProductIngredients : undefined,
         calories: editProductCalories.trim() || undefined,
-        protein: editProductProtein.trim() || undefined
+        protein: editProductProtein.trim() || undefined,
+        weightKg: editProductWeight ? Number(editProductWeight) : undefined,
+        active: editProductActive
       });
       setProducts((current) => current.map((product) => (product.id === updated.id ? updated : product)));
       setProductDrafts((current) => ({ ...current, [updated.id]: updated }));
@@ -1747,12 +1761,24 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                               />
                             </label>
                             <label>
-                              Stock (Qty)
+                              Weight (Kg)
                               <input
-                                value={newProductStock}
-                                onChange={(event) => setNewProductStock(event.target.value)}
+                                value={newProductWeight}
+                                onChange={(event) => setNewProductWeight(event.target.value)}
                                 type="number"
+                                step="0.1"
                               />
+                            </label>
+                          </div>
+                          <div className="admin-modal-field-row">
+                            <label style={{ flexDirection: "row", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
+                              <input
+                                type="checkbox"
+                                checked={newProductActive}
+                                onChange={(event) => setNewProductActive(event.target.checked)}
+                                style={{ width: "auto" }}
+                              />
+                              Active / Visible in Menu
                             </label>
                           </div>
                           <label>
@@ -2106,12 +2132,24 @@ export const AdminPage = ({ onToast }: AdminPageProps) => {
                                 />
                               </label>
                               <label>
-                                Stock (Qty)
+                                Weight (Kg)
                                 <input
-                                  value={editProductStock}
-                                  onChange={(event) => setEditProductStock(event.target.value)}
+                                  value={editProductWeight}
+                                  onChange={(event) => setEditProductWeight(event.target.value)}
                                   type="number"
+                                  step="0.1"
                                 />
+                              </label>
+                            </div>
+                            <div className="admin-modal-field-row">
+                              <label style={{ flexDirection: "row", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
+                                <input
+                                  type="checkbox"
+                                  checked={editProductActive}
+                                  onChange={(event) => setEditProductActive(event.target.checked)}
+                                  style={{ width: "auto" }}
+                                />
+                                Active / Visible in Menu
                               </label>
                             </div>
                             <label>

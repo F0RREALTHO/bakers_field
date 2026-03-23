@@ -113,10 +113,15 @@ const ProductDetail = ({
           {(() => {
             const salePrice = getSalePrice(product.priceInr);
             return (
-              <div className="price-row">
+              <div className="price-row" style={{ alignItems: "center", gap: "0.5rem" }}>
                 <p className="price">₹{salePrice ?? product.priceInr}</p>
                 {salePrice != null ? (
                   <p className="price price--strike">₹{product.priceInr}</p>
+                ) : null}
+                {product.weightKg ? (
+                  <span className="muted" style={{ fontSize: "0.9rem" }}>
+                    ({product.weightKg} kg)
+                  </span>
                 ) : null}
               </div>
             );

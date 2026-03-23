@@ -16,6 +16,8 @@ export type Product = {
   ingredients?: string[];
   calories?: string;
   protein?: string;
+  weightKg?: number;
+  active?: boolean;
 };
 
 export type Tag = {
@@ -258,6 +260,8 @@ export type AdminProduct = {
   ingredients?: string[];
   calories?: string;
   protein?: string;
+  weightKg?: number;
+  active?: boolean;
 };
 
 export type AdminOrder = Order;
@@ -290,6 +294,8 @@ export type AdminProductRequest = {
   ingredients?: string[];
   calories?: string;
   protein?: string;
+  weightKg?: number;
+  active?: boolean;
 };
 
 export type AdminStatusRequest = {
